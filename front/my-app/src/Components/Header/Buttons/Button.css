@@ -1,0 +1,38 @@
+/* Основной стиль кнопки */
+.btn1 {
+    background-color: #007bff; /* Синий фон */
+    color: white; /* Белый текст */
+    border: 2px solid #007bff; /* Синий бордер */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 16px; /* Размер шрифта */
+    font-weight: bold; /* Жирный шрифт */
+    border-radius: 5px; /* Закругленные углы */
+    cursor: pointer; /* Курсор в виде руки */
+    transition: all 0.3s ease; /* Плавный переход для всех свойств */
+    margin-right: 20px;
+  }
+  
+  /* Эффект при наведении */
+  .btn1:hover {
+    background-color: #0056b3; /* Темно-синий при наведении */
+    border-color: #0056b3; /* Темно-синий бордер */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень при наведении */
+  }
+  
+  /* Эффект при нажатии */
+  .btn1:active {
+    background-color: #004085; /* Еще более темный синий */
+    border-color: #004085; /* Темный бордер */
+    transform: translateY(2px); /* Сдвиг кнопки при нажатии */
+  }
+  
+  /* Фокусное состояние */
+  .btn1:focus {
+    outline: none; /* Убираем стандартную обводку фокуса */
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5); /* Синие тени */
+  }
+  
+  .btn-danger {
+    background-color: red;
+    color: white;
+  }
