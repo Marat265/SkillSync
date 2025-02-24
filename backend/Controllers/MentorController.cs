@@ -102,8 +102,8 @@ namespace Portfolio.Controllers
         }
         
         
-        [HttpDelete("Skills/{skillId}")]
-        public async Task<IActionResult> DeleteSkill(int skillId)
+        [HttpDelete("Skills/{skillName}")]
+        public async Task<IActionResult> DeleteSkill(string skillName)
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -112,9 +112,17 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
+            var skill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName);
+
+            if (skill == null)
+            {
+                return BadRequest("Skill with the given name not found.");
+            }
+            
+
             var existingMentorSkill = await _context.MentorSkills
-                .FirstOrDefaultAsync(ms => ms.MentorId == mentorId
-                 && ms.SkillId == skillId);
+                .FirstOrDefaultAsync(ms => ms.MentorId == mentorId && ms.SkillId == skill.Id);
+
 
             if (existingMentorSkill == null)
             {
