@@ -53,10 +53,7 @@ namespace Portfolio.Controllers
                 .ThenInclude(s => s.Mentor)
                 .ToListAsync();
 
-            if (!registrations.Any())
-            {
-                return NotFound("No sessions found for this student");
-            }
+           
 
             // Извлекаем сессии, которые связаны с регистрациями
             var sessionDtos = registrations
@@ -156,6 +153,38 @@ namespace Portfolio.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Student successfully registered for the session");
+        }
+
+        [HttpDelete("Session/register/{sessionId}")]
+        public async Task<IActionResult> LogOutOfSession(int sessionId)
+        {
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (studentId == null)
+            {
+                return NotFound("Student not found");
+            }
+
+            var session = await _context.Sessions
+                .Include(s => s.Registrations)
+                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
+            if (session == null)
+            {
+                return NotFound("Session not found");
+            }
+
+            var registration =  session.Registrations.FirstOrDefault(r => r.StudentId == studentId 
+            && sessionId == r.SessionId);
+
+            if (registration == null)
+            {
+                return NotFound("Registration not found for this student in the specified session.");
+            }
+
+            _context.SessionRegistrations.Remove(registration);
+            await _context.SaveChangesAsync();
+
+            return Ok("Student successfully logged out of the session");
         }
 
 
