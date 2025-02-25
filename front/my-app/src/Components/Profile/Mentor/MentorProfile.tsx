@@ -16,7 +16,7 @@ const MentorProfile = () => {
   const [mentor, setMentor] = useState<MentorProfileData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Добавляем состояние загрузки
+  const [loading, setLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const fetchMentorProfile = async () => {
@@ -49,8 +49,11 @@ const MentorProfile = () => {
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to add skill");
-
+      if (!response.ok) {
+        const errorText = await response.text(); // Ждем текст ошибки
+        throw new Error(errorText || "Failed to add skill");
+      }
+      
       setSuccessMessage("Skill added successfully!");
       setError(null);
       setMentor((prevMentor) =>
@@ -69,7 +72,11 @@ const MentorProfile = () => {
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to delete skill");
+      if (!response.ok) {
+        const errorText = await response.text(); // Ждем текст ошибки
+        throw new Error(errorText || "Failed to add skill");
+      }
+
 
       setSuccessMessage("Skill removed successfully!");
       setError(null);
@@ -92,7 +99,11 @@ const MentorProfile = () => {
         body: JSON.stringify({ Name: newName, Email: newEmail }), // Отправляем новые данные
       });
   
-      if (!response.ok) throw new Error("Failed to update profile");
+      if (!response.ok) {
+        const errorText = await response.text(); // Ждем текст ошибки
+        throw new Error(errorText || "Failed to add skill");
+      }
+
   
       const updatedMentor = { ...mentor, name: newName, email: newEmail }; // Обновляем состояние
       setMentor(updatedMentor);
@@ -102,16 +113,26 @@ const MentorProfile = () => {
     }
   };
   
+  useEffect(() => {
+    if (successMessage || error) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+        setError(null);
+      }, 2000);
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>; // Индикатор загрузки
-  if (error) return <AlertMessage message={error} type="danger" />;
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, error]);
+
+
+  if (loading) return <div className="text-center mt-5">Loading...</div>; 
   if (!mentor) return <div className="text-center mt-5">No mentor data available</div>;
-
+  
   return (
     <div className="container d-flex justify-content-center mt-5">
       <div className="card shadow-lg rounded-3" style={{ maxWidth: "600px" }}>
         <div className="card-header bg-primary text-white text-center py-3">
-          <h3>Mentor Profile</h3>
+         <h3>Mentor Profile</h3>
         </div>
         <div className="card-body">
           <MentorInfo
@@ -124,8 +145,9 @@ const MentorProfile = () => {
           <SkillsList skills={mentor.skills} onDeleteSkill={handleDeleteSkill} />
           <AddSkillForm onAddSkill={handleAddSkill} />
 
-          <AlertMessage message={successMessage} type="success" />
-        </div>
+          {error ? <AlertMessage message={error} type="danger" /> : null}
+          {successMessage ? <AlertMessage message={successMessage} type="success" /> : null}
+          </div>
       </div>
     </div>
   );

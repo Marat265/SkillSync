@@ -12,33 +12,39 @@ const SignUpPage = () => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
+  
     try {
       const response = await fetch('https://localhost:7002/api/Account/Register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
       });
-
+  
       if (response.ok) {
         console.log('Signed up');
         navigate('/login');
       } else {
         const errorText = await response.text();
-        throw new Error(errorText || 'Failed to sign up');
+        
+        try {
+          // Попытка разобрать JSON
+          const errorJson = JSON.parse(errorText);
+  
+          if (Array.isArray(errorJson) && errorJson.length > 0 && errorJson[0].description) {
+            setError(errorJson[0].description); // Берем описание первой ошибки
+          } else {
+            setError(errorText); // Если это не массив с `description`, выводим как есть
+          }
+        } catch {
+          setError(errorText); // Если JSON парсинг не удался, выводим как строку
+        }
       }
     } catch (error: any) {
       console.error('Error:', error.message);
       setError(error.message);
     }
   };
+  
 
   return (
     <div className="container d-flex justify-content-center align-items-center min-vh-100">
