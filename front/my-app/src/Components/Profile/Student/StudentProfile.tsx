@@ -96,6 +96,32 @@ const StudentProfile = () => {
     setIsEditingEmail(false);
   };
 
+  const handleLogOutOfSession = async (sessionId: number) => {
+    try {
+      const response = await fetch(`https://localhost:7002/api/Students/Session/register/${sessionId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const errorText = await handleError(response);
+        throw new Error(errorText);
+      }
+
+      // Удаляем сессию из списка
+      setProfile((prevProfile) => ({
+        ...prevProfile!,
+        sessions: prevProfile!.sessions.filter((session) => session.sessionId !== sessionId),
+      }));
+
+      setSuccessMessage("Successfully logged out of the session!");
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+
   useEffect(() => {
     if (successMessage || error) {
       const timer = setTimeout(() => {
@@ -189,6 +215,12 @@ const StudentProfile = () => {
                         <p><strong>Email:</strong> {session.mentor.email}</p>
                       </div>
                     )}
+                    <button
+                      className="btn btn-danger btn-sm mt-2"
+                      onClick={() => handleLogOutOfSession(session.sessionId)}
+                    >
+                      Log Out of Session
+                    </button>
                   </li>
                 ))}
               </ul>
