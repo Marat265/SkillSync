@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { handleError } from '../../../Helpers/errorHandler';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -24,20 +25,8 @@ const SignUpPage = () => {
         console.log('Signed up');
         navigate('/login');
       } else {
-        const errorText = await response.text();
-        
-        try {
-          // Попытка разобрать JSON
-          const errorJson = JSON.parse(errorText);
-  
-          if (Array.isArray(errorJson) && errorJson.length > 0 && errorJson[0].description) {
-            setError(errorJson[0].description); // Берем описание первой ошибки
-          } else {
-            setError(errorText); // Если это не массив с `description`, выводим как есть
-          }
-        } catch {
-          setError(errorText); // Если JSON парсинг не удался, выводим как строку
-        }
+        const errorText = await handleError(response);
+        setError(errorText);
       }
     } catch (error: any) {
       console.error('Error:', error.message);

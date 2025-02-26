@@ -3,6 +3,7 @@ import MentorInfo from "./MentorInfo";
 import SkillsList from "./SkillsList";
 import AddSkillForm from "./AddSkillForm";
 import AlertMessage from "./AlertMessage";
+import { handleError } from "../../../Helpers/errorHandler";
 
 type MentorProfileData = {
   name: string;
@@ -100,8 +101,8 @@ const MentorProfile = () => {
       });
   
       if (!response.ok) {
-        const errorText = await response.text(); // Ждем текст ошибки
-        throw new Error(errorText || "Failed to add skill");
+        const errorText = await handleError(response);
+        throw new Error(errorText);
       }
 
   

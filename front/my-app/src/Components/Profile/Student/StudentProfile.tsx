@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { handleError } from "../../../Helpers/errorHandler";
 
 type UserDto = {
   id: string;
@@ -73,8 +74,8 @@ const StudentProfile = () => {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to update profile");
+        const errorText = await handleError(response);
+        throw new Error(errorText);
       }
 
       setProfile((prevProfile) => ({ ...prevProfile!, name, email }));
