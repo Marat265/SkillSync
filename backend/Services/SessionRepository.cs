@@ -1,68 +1,100 @@
-﻿using Portfolio.Models;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Portfolio.Data;
+using Portfolio.Models;
 using Skillsync.Repositories;
 
 namespace Skillsync.Services
 {
     public class SessionRepository : ISessionRepository
     {
-        public Task AddSessionAsync(Session session)
+        private readonly ApplicationDbContext _context;
+
+        public SessionRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task AddSessionRegistrationAsync(SessionRegistration sessionRegistration)
+        public async Task<Session> GetSessionWithMentorByIdAsync(int sessionId)
         {
-            throw new NotImplementedException();
+
+            return await _context.Sessions
+               .Include(m => m.Mentor)
+               .FirstOrDefaultAsync(s => s.SessionId == sessionId);
         }
 
-        public Task DeleteSessionAsync(Session session)
+        public async Task<List<Session>> GetAllSessionsWithMentorsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Sessions
+            .Include(m => m.Mentor)
+              .ToListAsync();
         }
 
-        public Task DeleteSessionRegistrationAsync(SessionRegistration sessionRegistration)
+        public async Task<Session> GetSessionWithRegistrationsByIdAsync(int sessionId)
         {
-            throw new NotImplementedException();
+            return await _context.Sessions
+                .Include(s => s.Registrations)
+                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+        }
+        public async Task<SessionRegistration> GetSessionRegistrationAsync(string studentId, int sessionId)
+        {
+            var registration = await _context.SessionRegistrations.FirstOrDefaultAsync(r => r.StudentId == studentId
+               && sessionId == r.SessionId);
+            return registration;
+        }
+        public async Task<List<SessionRegistration>> GetAllSessionRegistrationsWithMentorsAsync(string studentId)
+        {
+            return await _context.SessionRegistrations
+                .Where(r => r.StudentId == studentId)
+                .Include(r => r.Session) // Включаем сессии для этих регистраций
+                .ThenInclude(s => s.Mentor)
+                .ToListAsync();
         }
 
-        public Task<List<SessionRegistration>> GetAllSessionRegistrationsWithMentorsAsync(string studentId)
+        public async Task<List<Session>> GetMentorSessionsByIdAsync(string mentorId)
         {
-            throw new NotImplementedException();
+           return await _context.Sessions
+                .Where(s => s.MentorId == mentorId)
+                .Include(m => m.Mentor)
+                .ToListAsync();
+        }
+        public async Task<Session> GetMentorSessionByIdAsync(int sessionId, string mentorId)
+        {
+            return await _context.Sessions.FirstOrDefaultAsync(s => s.SessionId == sessionId
+            && s.MentorId == mentorId);
         }
 
-        public Task<List<Session>> GetAllSessionsWithMentorsAsync()
+
+        public async Task AddSessionAsync(Session session)
         {
-            throw new NotImplementedException();
+            _context.Add(session);
+            await SaveAsync();
+        }
+        public async Task DeleteSessionAsync(Session session)
+        {
+            _context.Remove(session);
+            await SaveAsync();
         }
 
-        public Task<Session> GetMentorSessionByIdAsync(int sessionId, string mentorId)
+
+        public async Task AddSessionRegistrationAsync(SessionRegistration sessionRegistration)
         {
-            throw new NotImplementedException();
+            _context.SessionRegistrations.Add(sessionRegistration);
+            await SaveAsync();
         }
 
-        public Task<List<Session>> GetMentorSessionsByIdAsync(string mentorId)
+        public async Task DeleteSessionRegistrationAsync(SessionRegistration sessionRegistration)
         {
-            throw new NotImplementedException();
+            _context.SessionRegistrations.Remove(sessionRegistration);
+            await SaveAsync();
         }
 
-        public Task<SessionRegistration> GetSessionRegistrationAsync(string studentId, int sessionId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<Session> GetSessionWithMentorByIdAsync(int sessionId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task<Session> GetSessionWithRegistrationsByIdAsync(int sessionId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task SaveAsync()
+        public async Task SaveAsync()
         {
-            throw new NotImplementedException();
+          await _context.SaveChangesAsync();
         }
     }
 }
