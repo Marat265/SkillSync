@@ -29,13 +29,14 @@ namespace Portfolio.Controllers
             _mapper = mapper;
         }
 
-
+        
         [HttpGet("Session/{sessionId}")]
         public async Task<IActionResult> GetSession(int sessionId)
         {
             var session = await _context.Sessions
                 .Include(m => m.Mentor)
                 .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+
 
             if (session == null)
             {
