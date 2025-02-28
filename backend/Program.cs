@@ -9,6 +9,8 @@ using Portfolio.Interfaces.Repositories;
 using Portfolio.Models;
 using Portfolio.Seed;
 using Portfolio.Token;
+using Skillsync.Repositories;
+using Skillsync.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -76,6 +78,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 
 
 var app = builder.Build();

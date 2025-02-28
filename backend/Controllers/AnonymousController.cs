@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Writers;
 using Portfolio.Data;
 using Portfolio.Dto;
 using Portfolio.Models;
+using Skillsync.Repositories;
 using System.Security.Claims;
 
 namespace Portfolio.Controllers
@@ -18,25 +19,22 @@ namespace Portfolio.Controllers
     public class AnonymousController : ControllerBase
     {
         private readonly UserManager<Users> _userManager;
-        private readonly ApplicationDbContext _context;
+        private readonly ISessionRepository _repository;
         private readonly IMapper _mapper;
 
         public AnonymousController(UserManager<Users> userManager,
-            ApplicationDbContext context, IMapper mapper)
+             IMapper mapper, ISessionRepository repository)
         {
             _userManager = userManager;
-            _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
 
         
         [HttpGet("Session/{sessionId}")]
         public async Task<IActionResult> GetSession(int sessionId)
         {
-            var session = await _context.Sessions
-                .Include(m => m.Mentor)
-                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
-
+            var session = await _repository.GetSessionWithMentorByIdAsync(sessionId);
 
             if (session == null)
             {
@@ -52,9 +50,7 @@ namespace Portfolio.Controllers
         [HttpGet("Sessions")]
         public async Task<IActionResult> GetSessions()
         {
-            var sessions = await _context.Sessions
-                .Include(m => m.Mentor)
-                .ToListAsync();
+            var sessions = await _repository.GetAllSessionsWithMentorsAsync();
 
             if (!sessions.Any())
             {

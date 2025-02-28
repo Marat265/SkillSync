@@ -38,9 +38,8 @@ namespace Skillsync.Services
         }
         public async Task<SessionRegistration> GetSessionRegistrationAsync(string studentId, int sessionId)
         {
-            var registration = await _context.SessionRegistrations.FirstOrDefaultAsync(r => r.StudentId == studentId
+            return await _context.SessionRegistrations.FirstOrDefaultAsync(r => r.StudentId == studentId
                && sessionId == r.SessionId);
-            return registration;
         }
         public async Task<List<SessionRegistration>> GetAllSessionRegistrationsWithMentorsAsync(string studentId)
         {
@@ -65,36 +64,29 @@ namespace Skillsync.Services
         }
 
 
-        public async Task AddSessionAsync(Session session)
+        public void AddSession(Session session)
         {
             _context.Add(session);
-            await SaveAsync();
         }
-        public async Task DeleteSessionAsync(Session session)
+        public void DeleteSession(Session session)
         {
             _context.Remove(session);
-            await SaveAsync();
         }
 
 
-        public async Task AddSessionRegistrationAsync(SessionRegistration sessionRegistration)
+        public void AddSessionRegistration(SessionRegistration sessionRegistration)
         {
             _context.SessionRegistrations.Add(sessionRegistration);
-            await SaveAsync();
         }
 
-        public async Task DeleteSessionRegistrationAsync(SessionRegistration sessionRegistration)
+        public void DeleteSessionRegistration(SessionRegistration sessionRegistration)
         {
             _context.SessionRegistrations.Remove(sessionRegistration);
-            await SaveAsync();
         }
-
-
-
 
         public async Task SaveAsync()
         {
-          await _context.SaveChangesAsync();
+           await _context.SaveChangesAsync();
         }
     }
 }

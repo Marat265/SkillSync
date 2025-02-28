@@ -12,10 +12,10 @@ namespace Skillsync.Repositories
         Task<List<SessionRegistration>> GetAllSessionRegistrationsWithMentorsAsync(string studentId); //student GetProfile
         Task<List<Session>> GetMentorSessionsByIdAsync(string mentorId); //mentor GetMentorSessions
         Task<Session> GetMentorSessionByIdAsync(int sessionId, string mentorId);
-        Task AddSessionAsync(Session session); //mentor Create
-        Task DeleteSessionAsync(Session session);
-        Task AddSessionRegistrationAsync(SessionRegistration sessionRegistration);
-        Task DeleteSessionRegistrationAsync(SessionRegistration sessionRegistration);
+        void AddSession(Session session); //mentor Create
+        void DeleteSession(Session session);
+        void AddSessionRegistration(SessionRegistration sessionRegistration);
+        void DeleteSessionRegistration(SessionRegistration sessionRegistration);
         Task SaveAsync();
 
     }

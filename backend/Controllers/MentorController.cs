@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Writers;
 using Portfolio.Data;
 using Portfolio.Dto;
 using Portfolio.Models;
+using Skillsync.Repositories;
 using System.Security.Claims;
 
 namespace Portfolio.Controllers
@@ -19,14 +20,16 @@ namespace Portfolio.Controllers
     {
         private readonly UserManager<Users> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly ISessionRepository _repository;
         private readonly IMapper _mapper;
 
         public MentorController(UserManager<Users> userManager, 
-            ApplicationDbContext context, IMapper mapper)
+            ApplicationDbContext context, ISessionRepository repository, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
 
 
@@ -149,10 +152,7 @@ namespace Portfolio.Controllers
             }
            
 
-            var sessions = await _context.Sessions
-                .Where(s => s.MentorId == mentorId)
-                .Include(m => m.Mentor)
-                .ToListAsync();
+            var sessions = await _repository.GetMentorSessionsByIdAsync(mentorId);
 
             if (!sessions.Any())
             {
@@ -190,8 +190,8 @@ namespace Portfolio.Controllers
                 Status = Enum.SessionStatus.Scheduled
             };
 
-             _context.Add(session);
-            await _context.SaveChangesAsync();
+             _repository.AddSession(session);
+            await _repository.SaveAsync();
 
             return Ok("Session created successfully");
         }
@@ -202,16 +202,15 @@ namespace Portfolio.Controllers
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var session = await _context.Sessions.FirstOrDefaultAsync(s => s.SessionId == sessionId
-            && s.MentorId == mentorId);
+            var session = await _repository.GetMentorSessionByIdAsync(sessionId,mentorId);
 
             if (session == null)
             {
                 return NotFound("Session not found");
             }
 
-            _context.Remove(session);
-            await _context.SaveChangesAsync();
+            _repository.DeleteSession(session);
+            await _repository.SaveAsync();
             return Ok("Session deleted successfully");
         }
 

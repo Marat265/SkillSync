@@ -9,6 +9,7 @@ using Portfolio.Data;
 using Portfolio.Dto;
 using Portfolio.Enum;
 using Portfolio.Models;
+using Skillsync.Repositories;
 using System.Security.Claims;
 
 namespace Portfolio.Controllers
@@ -20,14 +21,17 @@ namespace Portfolio.Controllers
     {
         private readonly UserManager<Users> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly ISessionRepository _repository;
         private readonly IMapper _mapper;
 
         public StudentsController(UserManager<Users> userManager,
-            ApplicationDbContext context, IMapper mapper)
+            ApplicationDbContext context, ISessionRepository repository, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
             _mapper = mapper;
+            _repository = repository;
+
         }
 
 
@@ -47,13 +51,9 @@ namespace Portfolio.Controllers
             }
 
             // Получаем все регистрации для текущего студента
-            var registrations = await _context.SessionRegistrations
-                .Where(r => r.StudentId == studentId)
-                .Include(r => r.Session) // Включаем сессии для этих регистраций
-                .ThenInclude(s => s.Mentor)
-                .ToListAsync();
+            var registrations = await _repository.GetAllSessionRegistrationsWithMentorsAsync(studentId);
 
-           
+
 
             // Извлекаем сессии, которые связаны с регистрациями
             var sessionDtos = registrations
@@ -122,9 +122,7 @@ namespace Portfolio.Controllers
                 return NotFound("Student not found");
             }
 
-            var session = await _context.Sessions
-                .Include(s => s.Registrations)  
-                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+            var session = await _repository.GetSessionWithRegistrationsByIdAsync(sessionId);
 
             if (session == null)
             {
@@ -148,9 +146,9 @@ namespace Portfolio.Controllers
                 Status = SessionStatus.Completed 
             };
 
-            _context.SessionRegistrations.Add(registration);
+            _repository.AddSessionRegistration(registration);
             session.CurrentStudents += 1; 
-            await _context.SaveChangesAsync();
+            await _repository.SaveAsync();
 
             return Ok("Student successfully registered for the session");
         }
@@ -164,25 +162,22 @@ namespace Portfolio.Controllers
                 return NotFound("Student not found");
             }
 
-            var session = await _context.Sessions
-                .Include(s => s.Registrations)
-                .FirstOrDefaultAsync(s => s.SessionId == sessionId);
+            var session = await _repository.GetSessionWithRegistrationsByIdAsync(sessionId);
 
             if (session == null)
             {
                 return NotFound("Session not found");
             }
 
-            var registration =  session.Registrations.FirstOrDefault(r => r.StudentId == studentId 
-            && sessionId == r.SessionId);
+            var registration =  await _repository.GetSessionRegistrationAsync(studentId, sessionId);
 
             if (registration == null)
             {
                 return NotFound("Registration not found for this student in the specified session.");
             }
 
-            _context.SessionRegistrations.Remove(registration);
-            await _context.SaveChangesAsync();
+            _repository.DeleteSessionRegistration(registration);
+            await _repository.SaveAsync();
 
             return Ok("Student successfully logged out of the session");
         }
