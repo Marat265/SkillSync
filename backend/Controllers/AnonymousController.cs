@@ -61,6 +61,7 @@ namespace Portfolio.Controllers
             return Ok(sessionDtos);
         }
 
+
         [HttpGet("Students")]
         public async Task<IActionResult> GetStudents()
         {

@@ -38,13 +38,13 @@ namespace Portfolio.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if (studentId == null)
             {
                 return BadRequest("Student not found");
             }
 
-            var user = await _userManager.FindByIdAsync(studentId);
+            var user = await _userManager.FindByIdAsync(studentId); //*
             if (user == null)
             {
                 return BadRequest("User not found");
@@ -62,7 +62,7 @@ namespace Portfolio.Controllers
 
             // Получаем студента и маппим на профиль
             var student = await _context.Users
-                .FirstOrDefaultAsync(s => s.Id == studentId);
+                .FirstOrDefaultAsync(s => s.Id == studentId); //*
 
             if (student == null)
             {
@@ -81,8 +81,8 @@ namespace Portfolio.Controllers
         [HttpPatch("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
-            var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(mentorId);
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
+            var user = await _userManager.FindByIdAsync(studentId); //*
             if (user == null)
             {
                 return BadRequest("User not found");
@@ -104,7 +104,7 @@ namespace Portfolio.Controllers
                 user.Name = model.Name;
             }
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user); //*
 
             if (result.Succeeded)
             {
@@ -116,7 +116,7 @@ namespace Portfolio.Controllers
         [HttpPost("Session/register/{sessionId}")]
         public async Task<IActionResult> RegisterForSession(int sessionId)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
             if (studentId == null)
             {
                 return NotFound("Student not found");
@@ -156,7 +156,7 @@ namespace Portfolio.Controllers
         [HttpDelete("Session/register/{sessionId}")]
         public async Task<IActionResult> LogOutOfSession(int sessionId)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
             if (studentId == null)
             {
                 return NotFound("Student not found");
