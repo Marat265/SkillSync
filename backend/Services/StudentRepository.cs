@@ -28,10 +28,10 @@ namespace Skillsync.Services
             return await _context.Users.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<bool> UpdateStudentAsync(Users student)
+        public async Task<IdentityResult> UpdateStudentAsync(Users student)
         {
-            var result = await _userManager.UpdateAsync(student);
-            return result.Succeeded;
+
+            return await _userManager.UpdateAsync(student);
         }
     }
 }

@@ -19,18 +19,15 @@ namespace Portfolio.Controllers
     [Authorize(Roles = "Student")]
     public class StudentsController : ControllerBase
     {
-        private readonly UserManager<Users> _userManager;
-        private readonly ApplicationDbContext _context;
-        private readonly ISessionRepository _repository;
+        private readonly ISessionRepository _sessionrep;
+        private readonly IStudentRepository _studentrep;
         private readonly IMapper _mapper;
 
-        public StudentsController(UserManager<Users> userManager,
-            ApplicationDbContext context, ISessionRepository repository, IMapper mapper)
+        public StudentsController(ISessionRepository SessionRepository, IStudentRepository studentRepository, IMapper mapper)
         {
-            _userManager = userManager;
-            _context = context;
             _mapper = mapper;
-            _repository = repository;
+            _sessionrep = SessionRepository;
+            _studentrep = studentRepository;
 
         }
 
@@ -44,14 +41,14 @@ namespace Portfolio.Controllers
                 return BadRequest("Student not found");
             }
 
-            var student = await _userManager.FindByIdAsync(studentId); //*
+            var student = await _studentrep.GetStudentByIdAsync(studentId); //*
             if (student == null)
             {
                 return BadRequest("User not found");
             }
 
             // Получаем все регистрации для текущего студента
-            var registrations = await _repository.GetAllSessionRegistrationsWithMentorsAsync(studentId);
+            var registrations = await _sessionrep.GetAllSessionRegistrationsWithMentorsAsync(studentId);
 
 
 
@@ -60,14 +57,7 @@ namespace Portfolio.Controllers
                 .Select(r => _mapper.Map<SessionDto>(r.Session)) // Преобразуем сессии в DTO
                 .ToList();
 
-            //// Получаем студента и маппим на профиль
-            //var student = await _context.Users
-            //    .FirstOrDefaultAsync(s => s.Id == studentId); //****
-
-            //if (student == null)
-            //{
-            //    return NotFound("Student not found");
-            //}
+            
 
             var profileDto = _mapper.Map<StudentProfileDto>(student);
             profileDto.Sessions = sessionDtos;
@@ -81,30 +71,30 @@ namespace Portfolio.Controllers
         [HttpPatch("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
-            var user = await _userManager.FindByIdAsync(studentId); //*
-            if (user == null)
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var student = await _studentrep.GetStudentByIdAsync(studentId); 
+            if (student == null)
             {
                 return BadRequest("User not found");
             }
 
             if (model.Name == "string")
             {
-                user.Email = model.Email;
-                user.UserName = model.Email;
+                student.Email = model.Email;
+                student.UserName = model.Email;
             }
             else if (model.Email == "string")
             {
-                user.Name = model.Name;
+                student.Name = model.Name;
             }
             else
             {
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                user.Name = model.Name;
+                student.Email = model.Email;
+                student.UserName = model.Email;
+                student.Name = model.Name;
             }
 
-            var result = await _userManager.UpdateAsync(user); //*
+            var result = await _studentrep.UpdateStudentAsync(student);
 
             if (result.Succeeded)
             {
@@ -116,13 +106,13 @@ namespace Portfolio.Controllers
         [HttpPost("Session/register/{sessionId}")]
         public async Task<IActionResult> RegisterForSession(int sessionId)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if (studentId == null)
             {
                 return NotFound("Student not found");
             }
 
-            var session = await _repository.GetSessionWithRegistrationsByIdAsync(sessionId);
+            var session = await _sessionrep.GetSessionWithRegistrationsByIdAsync(sessionId);
 
             if (session == null)
             {
@@ -146,9 +136,9 @@ namespace Portfolio.Controllers
                 Status = SessionStatus.Completed 
             };
 
-            _repository.AddSessionRegistration(registration);
+            _sessionrep.AddSessionRegistration(registration);
             session.CurrentStudents += 1; 
-            await _repository.SaveAsync();
+            await _sessionrep.SaveAsync();
 
             return Ok("Student successfully registered for the session");
         }
@@ -156,28 +146,28 @@ namespace Portfolio.Controllers
         [HttpDelete("Session/register/{sessionId}")]
         public async Task<IActionResult> LogOutOfSession(int sessionId)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             if (studentId == null)
             {
                 return NotFound("Student not found");
             }
 
-            var session = await _repository.GetSessionWithRegistrationsByIdAsync(sessionId);
+            var session = await _sessionrep.GetSessionWithRegistrationsByIdAsync(sessionId);
 
             if (session == null)
             {
                 return NotFound("Session not found");
             }
 
-            var registration =  await _repository.GetSessionRegistrationAsync(studentId, sessionId);
+            var registration =  await _sessionrep.GetSessionRegistrationAsync(studentId, sessionId);
 
             if (registration == null)
             {
                 return NotFound("Registration not found for this student in the specified session.");
             }
 
-            _repository.DeleteSessionRegistration(registration);
-            await _repository.SaveAsync();
+            _sessionrep.DeleteSessionRegistration(registration);
+            await _sessionrep.SaveAsync();
 
             return Ok("Student successfully logged out of the session");
         }

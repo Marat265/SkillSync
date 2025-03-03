@@ -19,22 +19,24 @@ namespace Portfolio.Controllers
     public class AnonymousController : ControllerBase
     {
         private readonly UserManager<Users> _userManager;
-        private readonly ISessionRepository _repository;
+        private readonly ISessionRepository _sessionrep;
+        private readonly IStudentRepository _studentrep;
         private readonly IMapper _mapper;
 
         public AnonymousController(UserManager<Users> userManager,
-             IMapper mapper, ISessionRepository repository)
+             IMapper mapper, ISessionRepository SessionRepository, IStudentRepository studentRepository) 
         {
             _userManager = userManager;
             _mapper = mapper;
-            _repository = repository;
+            _sessionrep = SessionRepository;
+            _studentrep = studentRepository;
         }
 
         
         [HttpGet("Session/{sessionId}")]
         public async Task<IActionResult> GetSession(int sessionId)
         {
-            var session = await _repository.GetSessionWithMentorByIdAsync(sessionId);
+            var session = await _sessionrep.GetSessionWithMentorByIdAsync(sessionId);
 
             if (session == null)
             {
@@ -50,7 +52,7 @@ namespace Portfolio.Controllers
         [HttpGet("Sessions")]
         public async Task<IActionResult> GetSessions()
         {
-            var sessions = await _repository.GetAllSessionsWithMentorsAsync();
+            var sessions = await _sessionrep.GetAllSessionsWithMentorsAsync();
 
             if (!sessions.Any())
             {
@@ -65,7 +67,7 @@ namespace Portfolio.Controllers
         [HttpGet("Students")]
         public async Task<IActionResult> GetStudents()
         {
-            var students = await _userManager.GetUsersInRoleAsync("Student");
+            var students = await _studentrep.GetStudentsAsync();
             if (!students.Any())
             {
                 return BadRequest("There is no students");
@@ -79,7 +81,7 @@ namespace Portfolio.Controllers
         [HttpGet("Student/{studentId}")]
         public async Task<IActionResult> GetStudents(string studentId)
         {
-            var student = await _userManager.FindByIdAsync(studentId);
+            var student = await _studentrep.GetStudentByIdAsync(studentId);
             if (student == null)
             {
                 return BadRequest("Student not found");
