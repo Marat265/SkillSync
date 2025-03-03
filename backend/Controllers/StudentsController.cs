@@ -44,8 +44,8 @@ namespace Portfolio.Controllers
                 return BadRequest("Student not found");
             }
 
-            var user = await _userManager.FindByIdAsync(studentId); //*
-            if (user == null)
+            var student = await _userManager.FindByIdAsync(studentId); //*
+            if (student == null)
             {
                 return BadRequest("User not found");
             }
@@ -60,14 +60,14 @@ namespace Portfolio.Controllers
                 .Select(r => _mapper.Map<SessionDto>(r.Session)) // Преобразуем сессии в DTO
                 .ToList();
 
-            // Получаем студента и маппим на профиль
-            var student = await _context.Users
-                .FirstOrDefaultAsync(s => s.Id == studentId); //*
+            //// Получаем студента и маппим на профиль
+            //var student = await _context.Users
+            //    .FirstOrDefaultAsync(s => s.Id == studentId); //****
 
-            if (student == null)
-            {
-                return NotFound("Student not found");
-            }
+            //if (student == null)
+            //{
+            //    return NotFound("Student not found");
+            //}
 
             var profileDto = _mapper.Map<StudentProfileDto>(student);
             profileDto.Sessions = sessionDtos;
@@ -81,7 +81,7 @@ namespace Portfolio.Controllers
         [HttpPatch("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
-            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //*
+            var studentId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
             var user = await _userManager.FindByIdAsync(studentId); //*
             if (user == null)
             {
