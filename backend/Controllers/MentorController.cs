@@ -42,7 +42,7 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
-            var mentor = await _context.Users.Include(u => u.MentorSkills)
+            var mentor = await _context.Users.Include(u => u.MentorSkills) //*
                 .ThenInclude(ms => ms.Skill)
                 .FirstOrDefaultAsync(u => u.Id == mentorId);
 
@@ -218,13 +218,13 @@ namespace Portfolio.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(mentorId);
+            var user = await _userManager.FindByIdAsync(mentorId); //*
             if (user == null)
             {
                 return BadRequest("User not found");
             }
 
-            var mentor = await _context.Users.Where(m => m.Id == mentorId)
+            var mentor = await _context.Users.Where(m => m.Id == mentorId) //*
                 .Include(m => m.MentorSkills)
                 .ThenInclude(m => m.Skill)
                 .Include(m => m.Reviews)
@@ -246,7 +246,7 @@ namespace Portfolio.Controllers
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(mentorId);
+            var user = await _userManager.FindByIdAsync(mentorId); //*
             if (user == null)
             {
                 return BadRequest("User not found");

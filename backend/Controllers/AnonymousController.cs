@@ -94,7 +94,7 @@ namespace Portfolio.Controllers
         [HttpGet("Mentors")]
         public async Task<IActionResult> GetMentors()
         {
-            var mentors = await _userManager.GetUsersInRoleAsync("Mentor");
+            var mentors = await _userManager.GetUsersInRoleAsync("Mentor"); //*
             if (!mentors.Any())
             {
                 return BadRequest("There is no mentors");
@@ -108,7 +108,7 @@ namespace Portfolio.Controllers
         [HttpGet("Mentors/{mentorId}")]
         public async Task<IActionResult> GetMentor(string mentorId)
         {
-            var mentor = await _userManager.FindByIdAsync(mentorId);
+            var mentor = await _userManager.FindByIdAsync(mentorId); //*
             if (mentor == null)
             {
                 return BadRequest("Student not found");
