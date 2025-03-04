@@ -28,7 +28,6 @@ namespace Portfolio.Controllers
             _mapper = mapper;
             _sessionrep = SessionRepository;
             _studentrep = studentRepository;
-
         }
 
 

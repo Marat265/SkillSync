@@ -30,7 +30,6 @@ namespace Skillsync.Services
 
         public async Task<IdentityResult> UpdateStudentAsync(Users student)
         {
-
             return await _userManager.UpdateAsync(student);
         }
     }
