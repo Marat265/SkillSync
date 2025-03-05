@@ -18,18 +18,19 @@ namespace Portfolio.Controllers
     [AllowAnonymous]
     public class AnonymousController : ControllerBase
     {
-        private readonly UserManager<Users> _userManager;
         private readonly ISessionRepository _sessionrep;
         private readonly IStudentRepository _studentrep;
+        private readonly IMentorRepository _mentorrep;
         private readonly IMapper _mapper;
 
-        public AnonymousController(UserManager<Users> userManager,
-             IMapper mapper, ISessionRepository SessionRepository, IStudentRepository studentRepository) 
+        public AnonymousController(IMapper mapper, ISessionRepository SessionRepository, 
+            IStudentRepository studentRepository,
+             IMentorRepository mentorRepository) 
         {
-            _userManager = userManager;
             _mapper = mapper;
             _sessionrep = SessionRepository;
             _studentrep = studentRepository;
+            _mentorrep = mentorRepository;
         }
 
         
@@ -94,7 +95,7 @@ namespace Portfolio.Controllers
         [HttpGet("Mentors")]
         public async Task<IActionResult> GetMentors()
         {
-            var mentors = await _userManager.GetUsersInRoleAsync("Mentor"); //*
+            var mentors = await _mentorrep.GetAllMentorsAsync(); //*
             if (!mentors.Any())
             {
                 return BadRequest("There is no mentors");
@@ -108,7 +109,7 @@ namespace Portfolio.Controllers
         [HttpGet("Mentors/{mentorId}")]
         public async Task<IActionResult> GetMentor(string mentorId)
         {
-            var mentor = await _userManager.FindByIdAsync(mentorId); //*
+            var mentor = await _mentorrep.GetMentorByIdAsync(mentorId); //*
             if (mentor == null)
             {
                 return BadRequest("Student not found");

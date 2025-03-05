@@ -18,18 +18,19 @@ namespace Portfolio.Controllers
     [Authorize(Roles = "Mentor")]
     public class MentorController : ControllerBase
     {
-        private readonly UserManager<Users> _userManager;
         private readonly ApplicationDbContext _context;
-        private readonly ISessionRepository _repository;
+        private readonly ISessionRepository _sessionrep;
+        private readonly IMentorRepository _mentorrep;
         private readonly IMapper _mapper;
 
-        public MentorController(UserManager<Users> userManager, 
-            ApplicationDbContext context, ISessionRepository repository, IMapper mapper)
+        public MentorController(
+            ApplicationDbContext context, ISessionRepository repository, 
+            IMentorRepository mentorRepository,  IMapper mapper)
         {
-            _userManager = userManager;
             _context = context;
             _mapper = mapper;
-            _repository = repository;
+            _sessionrep = repository;
+            _mentorrep = mentorRepository;
         }
 
 
@@ -42,9 +43,7 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
-            var mentor = await _context.Users.Include(u => u.MentorSkills) //*
-                .ThenInclude(ms => ms.Skill)
-                .FirstOrDefaultAsync(u => u.Id == mentorId);
+            var mentor = await _mentorrep.GetMentorWithSkillsByIdAsync(mentorId);
 
             if (mentor == null)
             {
@@ -152,7 +151,7 @@ namespace Portfolio.Controllers
             }
            
 
-            var sessions = await _repository.GetMentorSessionsByIdAsync(mentorId);
+            var sessions = await _sessionrep.GetMentorSessionsByIdAsync(mentorId);
 
             if (!sessions.Any())
             {
@@ -190,8 +189,8 @@ namespace Portfolio.Controllers
                 Status = Enum.SessionStatus.Scheduled
             };
 
-             _repository.AddSession(session);
-            await _repository.SaveAsync();
+             _sessionrep.AddSession(session);
+            await _sessionrep.SaveAsync();
 
             return Ok("Session created successfully");
         }
@@ -202,15 +201,15 @@ namespace Portfolio.Controllers
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var session = await _repository.GetMentorSessionByIdAsync(sessionId,mentorId);
+            var session = await _sessionrep.GetMentorSessionByIdAsync(sessionId,mentorId);
 
             if (session == null)
             {
                 return NotFound("Session not found");
             }
 
-            _repository.DeleteSession(session);
-            await _repository.SaveAsync();
+            _sessionrep.DeleteSession(session);
+            await _sessionrep.SaveAsync();
             return Ok("Session deleted successfully");
         }
 
@@ -218,17 +217,13 @@ namespace Portfolio.Controllers
         public async Task<IActionResult> GetProfile()
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(mentorId); //*
+            var user = await _mentorrep.GetMentorByIdAsync(mentorId); 
             if (user == null)
             {
                 return BadRequest("User not found");
             }
 
-            var mentor = await _context.Users.Where(m => m.Id == mentorId) //*
-                .Include(m => m.MentorSkills)
-                .ThenInclude(m => m.Skill)
-                .Include(m => m.Reviews)
-                .FirstOrDefaultAsync();
+            var mentor = await _mentorrep.GetMentorProfileByIdAsync(mentorId);
 
             if (mentor == null)
             {
@@ -246,29 +241,29 @@ namespace Portfolio.Controllers
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileModel model)
         {
             var mentorId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userManager.FindByIdAsync(mentorId); //*
-            if (user == null)
+            var mentor = await _mentorrep.GetMentorByIdAsync(mentorId);
+            if (mentor == null)
             {
                 return BadRequest("User not found");
             }
 
             if (model.Name == "string")
             {
-                user.Email = model.Email;
-                user.UserName = model.Email;
+                mentor.Email = model.Email;
+                mentor.UserName = model.Email;
             }
             else if (model.Email == "string")
             {
-                user.Name = model.Name;
+                mentor.Name = model.Name;
             }
             else
             {
-                user.Email = model.Email;
-                user.UserName = model.Email;
-                user.Name = model.Name;
+                mentor.Email = model.Email;
+                mentor.UserName = model.Email;
+                mentor.Name = model.Name;
             }
 
-            var result = await _userManager.UpdateAsync(user);
+            var result = await _mentorrep.UpdateMentorProfileAsync(mentor); 
 
             if (result.Succeeded)
             {

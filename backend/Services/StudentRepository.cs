@@ -28,7 +28,7 @@ namespace Skillsync.Services
             return await _context.Users.FirstOrDefaultAsync(s => s.Id == id);
         }
 
-        public async Task<IdentityResult> UpdateStudentAsync(Users student)
+        public async Task<IdentityResult> UpdateStudentProfileAsync(Users student)
         {
             return await _userManager.UpdateAsync(student);
         }

@@ -93,7 +93,7 @@ namespace Portfolio.Controllers
                 student.Name = model.Name;
             }
 
-            var result = await _studentrep.UpdateStudentAsync(student);
+            var result = await _studentrep.UpdateStudentProfileAsync(student);
 
             if (result.Succeeded)
             {
