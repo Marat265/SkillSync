@@ -68,13 +68,13 @@ namespace Portfolio.Controllers
                 return BadRequest("Enter your skill");
             }
 
-            var existingSkill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName);
+            var existingSkill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName); //*
 
             if (existingSkill == null)
             {
                 existingSkill = new Skills { Name = skillName };
-                _context.Skills.Add(existingSkill);
-                await _context.SaveChangesAsync();
+                _context.Skills.Add(existingSkill); //*
+                await _context.SaveChangesAsync(); //*
             }
           
 
@@ -86,19 +86,19 @@ namespace Portfolio.Controllers
             }
 
             var existingMentorSkill = await _context.MentorSkills.FirstOrDefaultAsync(ms => ms.MentorId == mentorId 
-            && ms.SkillId == existingSkill.Id);
+            && ms.SkillId == existingSkill.Id); //*
             if (existingMentorSkill != null)
             {
                 return BadRequest("You already have this skill.");
             }
 
-            MentorSkills MentorSkills = new MentorSkills()
+            MentorSkills MentorSkill = new MentorSkills()
             {
                 MentorId = mentorId,
                 SkillId = existingSkill.Id
             };
-            _context.MentorSkills.Add(MentorSkills);
-            await _context.SaveChangesAsync();
+            _context.MentorSkills.Add(MentorSkill); //*
+            await _context.SaveChangesAsync(); //*
 
             return Ok("Skill added successfully.");
         }
@@ -114,7 +114,7 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
-            var skill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName);
+            var skill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName); //*
 
             if (skill == null)
             {
@@ -123,7 +123,7 @@ namespace Portfolio.Controllers
             
 
             var existingMentorSkill = await _context.MentorSkills
-                .FirstOrDefaultAsync(ms => ms.MentorId == mentorId && ms.SkillId == skill.Id);
+                .FirstOrDefaultAsync(ms => ms.MentorId == mentorId && ms.SkillId == skill.Id); //*
 
 
             if (existingMentorSkill == null)
@@ -131,8 +131,8 @@ namespace Portfolio.Controllers
                 return NotFound("Skill not found or not assigned to this mentor.");
             }
 
-            _context.MentorSkills.Remove(existingMentorSkill);
-            await _context.SaveChangesAsync();
+            _context.MentorSkills.Remove(existingMentorSkill); //*
+            await _context.SaveChangesAsync(); //*
             return Ok("Skill removed successfully.");
 
         }
