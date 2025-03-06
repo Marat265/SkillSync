@@ -18,19 +18,19 @@ namespace Portfolio.Controllers
     [Authorize(Roles = "Mentor")]
     public class MentorController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly ISessionRepository _sessionrep;
         private readonly IMentorRepository _mentorrep;
+        private readonly ISkillRepository _skillrep;
         private readonly IMapper _mapper;
 
         public MentorController(
-            ApplicationDbContext context, ISessionRepository repository, 
-            IMentorRepository mentorRepository,  IMapper mapper)
+            ISessionRepository repository, IMentorRepository mentorRepository, 
+            ISkillRepository skillRepository, IMapper mapper)
         {
-            _context = context;
             _mapper = mapper;
             _sessionrep = repository;
             _mentorrep = mentorRepository;
+            _skillrep = skillRepository;
         }
 
 
@@ -59,7 +59,8 @@ namespace Portfolio.Controllers
             return Ok(skillNames);
         }
 
-
+        
+       
         [HttpPost("Skills/{skillName}")]
         public async Task<IActionResult> CreateSkills(string skillName)
         {
@@ -68,13 +69,13 @@ namespace Portfolio.Controllers
                 return BadRequest("Enter your skill");
             }
 
-            var existingSkill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName); //*
+            var existingSkill = await _skillrep.FindSkillByNameAsync(skillName);
 
             if (existingSkill == null)
             {
                 existingSkill = new Skills { Name = skillName };
-                _context.Skills.Add(existingSkill); //*
-                await _context.SaveChangesAsync(); //*
+                _skillrep.AddSkill(existingSkill);
+                await _skillrep.SaveAsync();
             }
           
 
@@ -85,8 +86,7 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
-            var existingMentorSkill = await _context.MentorSkills.FirstOrDefaultAsync(ms => ms.MentorId == mentorId 
-            && ms.SkillId == existingSkill.Id); //*
+            var existingMentorSkill =  await _skillrep.FindMentorSkillByIdAsync(mentorId, existingSkill.Id);   
             if (existingMentorSkill != null)
             {
                 return BadRequest("You already have this skill.");
@@ -97,9 +97,8 @@ namespace Portfolio.Controllers
                 MentorId = mentorId,
                 SkillId = existingSkill.Id
             };
-            _context.MentorSkills.Add(MentorSkill); //*
-            await _context.SaveChangesAsync(); //*
-
+            _skillrep.AddMentorSkill(MentorSkill);
+            await _skillrep.SaveAsync();
             return Ok("Skill added successfully.");
         }
         
@@ -114,7 +113,7 @@ namespace Portfolio.Controllers
                 return Unauthorized("Mentor is not authenticated.");
             }
 
-            var skill = await _context.Skills.FirstOrDefaultAsync(s => s.Name == skillName); //*
+            var skill = await _skillrep.FindSkillByNameAsync(skillName); 
 
             if (skill == null)
             {
@@ -122,8 +121,7 @@ namespace Portfolio.Controllers
             }
             
 
-            var existingMentorSkill = await _context.MentorSkills
-                .FirstOrDefaultAsync(ms => ms.MentorId == mentorId && ms.SkillId == skill.Id); //*
+            var existingMentorSkill = await _skillrep.FindMentorSkillByIdAsync(mentorId, skill.Id);  
 
 
             if (existingMentorSkill == null)
@@ -131,8 +129,8 @@ namespace Portfolio.Controllers
                 return NotFound("Skill not found or not assigned to this mentor.");
             }
 
-            _context.MentorSkills.Remove(existingMentorSkill); //*
-            await _context.SaveChangesAsync(); //*
+            _skillrep.RemoveMentorSkill(existingMentorSkill);
+            await _skillrep.SaveAsync();
             return Ok("Skill removed successfully.");
 
         }

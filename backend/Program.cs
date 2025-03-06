@@ -81,6 +81,7 @@ builder.Services.AddScoped<IJwtProvider, JwtProvider>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IMentorRepository, MentorRespository>();
+builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 
 
 var app = builder.Build();
