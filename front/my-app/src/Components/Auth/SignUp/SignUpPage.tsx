@@ -9,16 +9,25 @@ const SignUpPage = () => {
   const [role, setRole] = useState('');
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const [image, setImage] = useState<File | null>(null);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
   
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("role", role);
+    if (image) {
+      formData.append("image", image); // Добавляем файл
+    }
+  
     try {
       const response = await fetch('https://localhost:7002/api/Account/Register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: formData, // Убираем headers, потому что браузер сам установит Content-Type
       });
   
       if (response.ok) {
@@ -33,6 +42,7 @@ const SignUpPage = () => {
       setError(error.message);
     }
   };
+  
   
 
   return (
@@ -93,6 +103,17 @@ const SignUpPage = () => {
               required
             />
           </div>
+          <div className="mb-3">
+            <label htmlFor="image" className="form-label">Profile Image</label>
+            <input
+              type="file"
+              id="image"
+              className="form-control"
+              onChange={(e) => setImage(e.target.files?.[0] || null)}
+              accept="image/*"
+            />
+          </div>
+
           <button type="submit" className="btn btn-primary w-100 mb-2">
             Sign Up
           </button>
