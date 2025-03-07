@@ -52,6 +52,7 @@ const StudentProfile = () => {
         }
 
         const data = await response.json();
+        console.log(data);
         setProfile(data);
         setNewName(data.name); // Устанавливаем начальное значение для имени
         setNewEmail(data.email); // Устанавливаем начальное значение для email
