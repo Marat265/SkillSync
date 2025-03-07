@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dto.Auth;
 using Portfolio.Interfaces.Auth;
 using Portfolio.Models;
+using Skillsync.Interfaces;
 
 namespace Portfolio.Controllers
 {
@@ -15,39 +16,41 @@ namespace Portfolio.Controllers
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IPhotoService _photoService;
         private readonly IJwtProvider _jwtProvider;
 
         public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager,
-            RoleManager<IdentityRole> roleManager, IJwtProvider provider)
+            RoleManager<IdentityRole> roleManager, IPhotoService photoService, IJwtProvider provider)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _jwtProvider = provider;
+            _photoService = photoService;
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        public async Task<IActionResult> Register([FromForm] RegisterModel model)
         {
+            if (!await _roleManager.RoleExistsAsync(model.Role))
+            {
+                return BadRequest("Wrong option, try again!");
+            }
+
+            var photoResult = await _photoService.AddPhotoAsync(model.Image);
                 var user = new Users
                 {
                     Name = model.Name,
                     UserName = model.Email,
                     Email = model.Email,
+                    Image = photoResult.Url.ToString()
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
 
-            if (result.Succeeded)
+                if (result.Succeeded)
                 {
-                    if (await _roleManager.RoleExistsAsync(model.Role))
-                    {
                        await _userManager.AddToRoleAsync(user, model.Role);
-                    }
-                    else
-                    {
-                        return BadRequest("Wrong option, try again!");
-                    }
                 }
                 else return BadRequest(result.Errors);
             

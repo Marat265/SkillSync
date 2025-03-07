@@ -8,7 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace Portfolio.Interfaces.Repositories
+namespace Skillsync.Services
 {
     public class JwtProvider : IJwtProvider
     {

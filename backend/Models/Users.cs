@@ -9,7 +9,7 @@ namespace Portfolio.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-
+        public string Image { get; set; }
         public List<Session> Sessions { get; set; } = new();
         public List<Reviews> Reviews { get; set; } = new();
         public List<MentorSkills> MentorSkills { get; set; } = new();

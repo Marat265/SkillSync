@@ -8,6 +8,8 @@ using Portfolio.Interfaces.Auth;
 using Portfolio.Models;
 using Portfolio.Seed;
 using Portfolio.Token;
+using Skillsync.Helpers;
+using Skillsync.Interfaces;
 using Skillsync.Repositories;
 using Skillsync.Services;
 using System.Text;
@@ -81,7 +83,8 @@ builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IMentorRepository, MentorRespository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
-
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
 
