@@ -5,6 +5,7 @@ type UserDto = {
   id: string;
   name: string;
   email: string;
+  image: string; // Добавляем аватар
 };
 
 type SessionDto = {
@@ -21,6 +22,7 @@ type SessionDto = {
 type StudentProfileDto = {
   name: string;
   email: string;
+  image: string; // Добавляем аватар
   sessions: SessionDto[];
 };
 
@@ -121,7 +123,6 @@ const StudentProfile = () => {
     }
   };
 
-
   useEffect(() => {
     if (successMessage || error) {
       const timer = setTimeout(() => {
@@ -142,57 +143,65 @@ const StudentProfile = () => {
           <h3>Student Profile</h3>
         </div>
         <div className="card-body">
-          {/* Name editing */}
+          {/* Name and Avatar section */}
           <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-            {isEditingName ? (
-            <div>
-              <input
-                type="text"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-                className="form-control mb-2"
+            <div className="d-flex align-items-center">
+              <img
+                src={profile.image || "/default-avatar.png"} // Если аватар не задан, показываем дефолтный
+                alt="Student Avatar"
+                className="rounded-circle"
+                style={{ width: "50px", height: "50px", marginRight: "15px" }}
               />
-              <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
-                Save Name
-              </button>
-              <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
-                Cancel
-              </button>
+              <div>
+                {isEditingName ? (
+                  <div>
+                    <input
+                      type="text"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
+                      className="form-control mb-2"
+                    />
+                    <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
+                      Save Name
+                    </button>
+                    <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="mb-1"><strong>Name:</strong> {profile.name}</p>
+                    <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
+                      Edit Name
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
-          ) : (
             <div>
-              <p className="mb-1"><strong>Name:</strong> {profile.name}</p>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
-                Edit Name
-              </button>
-            </div>
-          )}
-        </div>
-        <div>
-          {isEditingEmail ? (
-            <div>
-              <input
-                type="email"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                className="form-control mb-2"
-              />
-              <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
-                Save Email
-              </button>
-              <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div>
-              <p className="mb-1"><strong>Email:</strong> {profile.email}</p>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
-                Edit Email
-              </button>
-            </div>
-          )}
+              {isEditingEmail ? (
+                <div>
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    className="form-control mb-2"
+                  />
+                  <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
+                    Save Email
+                  </button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="mb-1"><strong>Email:</strong> {profile.email}</p>
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
+                    Edit Email
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -213,6 +222,12 @@ const StudentProfile = () => {
                       <div>
                         <p><strong>Mentor:</strong> {session.mentor.name}</p>
                         <p><strong>Email:</strong> {session.mentor.email}</p>
+                        <img
+                          src={session.mentor.image || "/default-avatar.png"} // Аватар ментора
+                          alt="Mentor Avatar"
+                          className="rounded-circle"
+                          style={{ width: "30px", height: "30px", marginRight: "10px" }}
+                        />
                       </div>
                     )}
                     <button
