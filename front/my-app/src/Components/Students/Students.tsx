@@ -6,6 +6,7 @@ type UserDto = {
   id: string;
   name: string;
   email: string;
+  image:string;
   // добавь другие поля, если они есть
 };
 
@@ -68,7 +69,13 @@ const Students = () => {
                 </svg>
                 <div className="card-body">
                   <h5 className="card-title">{student.name}</h5>
-                  <p className="card-text">Email: {student.email}</p>
+                  <p className="card-text">
+                  <img src={student.image}
+                          alt={student.name}
+                          className="rounded-circle"
+                          style={{ width: "30px", height: "30px", marginRight: "10px" }}></img>
+                    Email: {student.email}
+                    </p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                     <Button text='View' onClick={() => handleNavigation(student.id)} />

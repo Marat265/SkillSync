@@ -6,7 +6,7 @@ type UserDto = {
   id: string;
   name: string;
   email: string;
-  // добавь другие поля, если они есть
+  image: string;
 };
 
 const Mentors = () => {
@@ -22,7 +22,7 @@ const Mentors = () => {
           headers: {
               'Content-Type': 'application/json',
           },
-          credentials: 'include', // Важно! Это заставляет браузер отправлять куки
+          credentials: 'include', 
       })
         if (!response.ok) {
           throw new Error('Failed to fetch students');
@@ -67,7 +67,13 @@ const Mentors = () => {
                 </svg>
                 <div className="card-body">
                   <h5 className="card-title">{mentor.name}</h5>
-                  <p className="card-text">Email: {mentor.email}</p>
+                  <p className="card-text">
+                    <img src={mentor.image}
+                          alt={mentor.name}
+                          className="rounded-circle"
+                          style={{ width: "30px", height: "30px", marginRight: "10px" }}></img>
+                    Email: {mentor.email}
+                    </p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                     <Button text='View' onClick={() => handleNavigation(mentor.id)} />
