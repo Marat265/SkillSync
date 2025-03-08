@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import MentorInfo from "./MentorInfo";
 import SkillsList from "./SkillsList";
 import AddSkillForm from "./AddSkillForm";
-import AlertMessage from "./AlertMessage";
-import { handleError } from "../../../Helpers/errorHandler";
+import AlertMessage from "../../UI/AlertMessage";
+import { MentorService } from "../../Services/mentorService";
 
 type MentorProfileData = {
   name: string;
@@ -23,15 +23,7 @@ const MentorProfile = () => {
   useEffect(() => {
     const fetchMentorProfile = async () => {
       try {
-        const response = await fetch("https://localhost:7002/api/Mentor/profile", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch mentor profile");
-
-        const data = await response.json();
+        const data = await MentorService.GetMentorProfile();
         setMentor(data);
       } catch (err: any) {
         setError(err.message);
@@ -45,17 +37,7 @@ const MentorProfile = () => {
 
   const handleAddSkill = async (skill: string) => {
     try {
-      const response = await fetch(`https://localhost:7002/api/Mentor/Skills/${skill}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text(); // Ждем текст ошибки
-        throw new Error(errorText || "Failed to add skill");
-      }
-
+      await MentorService.AddSkill(skill);
       setSuccessMessage("Skill added successfully!");
       setError(null);
       setMentor((prevMentor) =>
@@ -68,16 +50,7 @@ const MentorProfile = () => {
 
   const handleDeleteSkill = async (skillName: string) => {
     try {
-      const response = await fetch(`https://localhost:7002/api/Mentor/Skills/${skillName}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text(); // Ждем текст ошибки
-        throw new Error(errorText || "Failed to remove skill");
-      }
+      await MentorService.DeleteSkill(skillName);
 
       setSuccessMessage("Skill removed successfully!");
       setError(null);
@@ -93,17 +66,7 @@ const MentorProfile = () => {
     if (!mentor) return; // Проверяем, что mentor не равен null
 
     try {
-      const response = await fetch("https://localhost:7002/api/Mentor/profile", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ Name: newName, Email: newEmail }), // Отправляем новые данные
-      });
-
-      if (!response.ok) {
-        const errorText = await handleError(response);
-        throw new Error(errorText);
-      }
+      await MentorService.UpdateProfile(newName,newEmail);
 
       const updatedMentor = { ...mentor, name: newName, email: newEmail }; // Обновляем состояние
       setMentor(updatedMentor);

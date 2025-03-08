@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleError } from '../../../Helpers/errorHandler';
+import { handleError } from '../../Helpers/errorHandler';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');

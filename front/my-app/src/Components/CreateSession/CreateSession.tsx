@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Button from '../Header/Buttons/Button';
+import Button from '../UI/Button';
 
 const CreateSession = () => {
   const [topic, setTopic] = useState('');

@@ -1,6 +1,6 @@
 import React from 'react'
-import StudentLists from './StudentLists/StudentLists'
-import MentorLists from './MentorLists/MentorLists'
+import StudentLists from '../../Pages/Students/StudentLists'
+import MentorLists from '../../Pages/Mentors/MentorLists'
 import { isMentor } from '../../Functions/IsMentor'
 
 type Props = {}

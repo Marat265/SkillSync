@@ -1,5 +1,5 @@
 
-import Mentors from '../../Mentors/Mentors';
+import Mentors from '../../Components/Mentors/Mentors';
 
 
 const MentorLists = () => {

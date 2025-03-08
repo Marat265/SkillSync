@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../Header/Buttons/Button';
+import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
 
 type UserDto = {

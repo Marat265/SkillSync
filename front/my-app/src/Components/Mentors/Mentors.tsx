@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../Header/Buttons/Button';
+import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
+import { MentorService } from '../Services/mentorService';
 
 type UserDto = {
   id: string;
@@ -17,17 +18,7 @@ const Mentors = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('https://localhost:7002/api/Anonymous/Mentors', {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          credentials: 'include', 
-      })
-        if (!response.ok) {
-          throw new Error('Failed to fetch students');
-        }
-        const data = await response.json();
+        const data = await MentorService.GetAllMentors();
         setMentors(data);
       } catch (err: any) {
         setError(err.message);

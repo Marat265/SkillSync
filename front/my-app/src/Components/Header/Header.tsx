@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Button from './Buttons/Button';
+import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
 import { isMentor } from '../../Functions/IsMentor';
 

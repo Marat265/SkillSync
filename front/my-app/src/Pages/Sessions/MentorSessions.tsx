@@ -1,36 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import Button from '../Header/Buttons/Button';
+import { SessionDto } from './Sessions';
+import Button from '../../Components/UI/Button';
 import { useNavigate } from 'react-router-dom';
-import { isMentor } from '../../Functions/IsMentor'; // Добавим импорт функции
 
-type MentorDto = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-export type SessionDto = {
-  sessionId: number;
-  mentor: MentorDto;
-  topic: string;
-  startTime: string; 
-  duration: string;
-  maxStudents: number;
-  currentStudents: number;
-  status: string; 
-};
-
-const Sessions = () => {
+const MentorSessions = () => {
     const [sessions, setSessions] = useState<SessionDto[]>([]);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-    const mentor = isMentor(); // Проверяем, является ли пользователь ментором
-
     // Используем useEffect для загрузки данных при монтировании компонента
     useEffect(() => {
       const fetchSessions = async () => {
         try {
-          const response = await fetch('https://localhost:7002/api/Anonymous/Sessions', {
+          const response = await fetch('https://localhost:7002/api/Mentor/Session', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -51,29 +32,34 @@ const Sessions = () => {
   
       fetchSessions();
     }, []);
-
+  
     const handleNavigation = (sessionId: number) => {
       navigate(`/session/${sessionId}`); // Переход на страницу с деталями сессии
     };
 
-    const handleJoinSession = async (sessionId: number) => {
+    const deleteSession = async (sessionId: number) => {
       try {
-        const response = await fetch(`https://localhost:7002/api/Students/Session/register/${sessionId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Важно! Это заставляет браузер отправлять куки
-        });
-
+        const response = await fetch(
+          `https://localhost:7002/api/Mentor/Delete/${sessionId}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+  
         if (!response.ok) {
-          const errorText = await response.text(); // Получаем текст ошибки
-           throw new Error(errorText); // Выбрасываем ошибку с текстом
+          throw new Error("Failed to delete session");
         }
-
-        alert('Successfully registered for the session!');
+  
+        // После удаления, заново загружаем список сессий
+        const updatedSessions = sessions.filter(session => session.sessionId !== sessionId);
+        setSessions(updatedSessions); // Обновляем состояние сессий
+  
       } catch (err: any) {
-        alert(err.message);
+        setError(err.message);
       }
     };
 
@@ -81,10 +67,10 @@ const Sessions = () => {
       <div className="album py-5 bg-body-tertiary">
         <div className="container">
           {error && <div className="alert alert-danger">{error}</div>} {/* Показываем ошибку, если есть */}
-
+  
           <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {sessions.map((session) => (
-              <div className="col" key={session.sessionId}>
+              <div className="col" key={session.topic}>
                 <div className="card shadow-sm">
                   <svg
                     className="bd-placeholder-img card-img-top"
@@ -110,12 +96,8 @@ const Sessions = () => {
                     <p className="card-text">Status: {session.status}</p>
                     <div className="d-flex justify-content-between align-items-center">
                       <div className="btn-group">
-                        <Button text='View' onClick={() => handleNavigation(session.sessionId)} />
-                        
-                        {/* Показываем кнопку "Join Session", если пользователь не является ментором */}
-                        {!mentor && session.currentStudents < session.maxStudents && (
-                          <Button text='Join Session' onClick={() => handleJoinSession(session.sessionId)} />
-                        )}
+                      <Button text='View' onClick={() => handleNavigation(session.sessionId)} />
+                      <Button text='Delete' onClick={() => deleteSession(session.sessionId)} />
                       </div>
                       <small className="text-body-secondary">9 mins</small>
                     </div>
@@ -129,4 +111,4 @@ const Sessions = () => {
     );
 };
 
-export default Sessions;
+export default MentorSessions;
