@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Импортируем useParams
+import { SessionService } from "../../Components/Services/sessionService";
 
 const SessionDetails = () => {
   const { sessionId } = useParams(); // Получаем sessionId из URL
@@ -11,21 +12,7 @@ const SessionDetails = () => {
 
     const fetchSessionDetails = async () => {
       try {
-        const response = await fetch(
-          `https://localhost:7002/api/Anonymous/Session/${sessionId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch session details");
-        }
-
-        const data = await response.json();
+        const data = await SessionService.GetSessionDetails(sessionId);
         setSession(data);
       } catch (err: any) {
         setError(err.message);

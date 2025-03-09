@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../Components/UI/Button';
 import { useNavigate } from 'react-router-dom';
 import { isMentor } from '../../Functions/IsMentor'; // Добавим импорт функции
+import { SessionService } from '../../Components/Services/sessionService';
 
 type MentorDto = {
   id: string;
@@ -30,19 +31,7 @@ const Sessions = () => {
     useEffect(() => {
       const fetchSessions = async () => {
         try {
-          const response = await fetch('https://localhost:7002/api/Anonymous/Sessions', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include', // Важно! Это заставляет браузер отправлять куки
-          });
-          
-          if (!response.ok) {
-            throw new Error('Failed to fetch sessions');
-          }
-          
-          const data = await response.json();
+          const data = await SessionService.GetAllSessions();
           setSessions(data);
         } catch (err: any) {
           setError(err.message);
@@ -58,18 +47,7 @@ const Sessions = () => {
 
     const handleJoinSession = async (sessionId: number) => {
       try {
-        const response = await fetch(`https://localhost:7002/api/Students/Session/register/${sessionId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Важно! Это заставляет браузер отправлять куки
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text(); // Получаем текст ошибки
-           throw new Error(errorText); // Выбрасываем ошибку с текстом
-        }
+        await SessionService.JoinSession(sessionId);
 
         alert('Successfully registered for the session!');
       } catch (err: any) {

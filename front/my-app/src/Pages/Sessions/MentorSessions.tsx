@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SessionDto } from './Sessions';
 import Button from '../../Components/UI/Button';
 import { useNavigate } from 'react-router-dom';
+import { SessionService } from '../../Components/Services/sessionService';
 
 const MentorSessions = () => {
     const [sessions, setSessions] = useState<SessionDto[]>([]);
@@ -11,19 +12,7 @@ const MentorSessions = () => {
     useEffect(() => {
       const fetchSessions = async () => {
         try {
-          const response = await fetch('https://localhost:7002/api/Mentor/Session', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include', // Важно! Это заставляет браузер отправлять куки
-          });
-          
-          if (!response.ok) {
-            throw new Error('Failed to fetch sessions');
-          }
-          
-          const data = await response.json();
+          const data = await SessionService.GetMentorSessions();
           setSessions(data);
         } catch (err: any) {
           setError(err.message);
@@ -39,20 +28,7 @@ const MentorSessions = () => {
 
     const deleteSession = async (sessionId: number) => {
       try {
-        const response = await fetch(
-          `https://localhost:7002/api/Mentor/Delete/${sessionId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-          }
-        );
-  
-        if (!response.ok) {
-          throw new Error("Failed to delete session");
-        }
+        await SessionService.DeleteSession(sessionId);
   
         // После удаления, заново загружаем список сессий
         const updatedSessions = sessions.filter(session => session.sessionId !== sessionId);

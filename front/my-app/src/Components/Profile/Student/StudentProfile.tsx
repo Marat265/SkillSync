@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { handleError } from "../../../Helpers/errorHandler";
+import { SessionService } from "../../Services/sessionService";
 
 type UserDto = {
   id: string;
@@ -101,16 +102,7 @@ const StudentProfile = () => {
 
   const handleLogOutOfSession = async (sessionId: number) => {
     try {
-      const response = await fetch(`https://localhost:7002/api/Students/Session/register/${sessionId}`, {
-        method: "DELETE",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const errorText = await handleError(response);
-        throw new Error(errorText);
-      }
-
+      await SessionService.LogOutOfSession(sessionId);
       // Удаляем сессию из списка
       setProfile((prevProfile) => ({
         ...prevProfile!,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../UI/Button';
+import { SessionService } from '../Services/sessionService';
 
 const CreateSession = () => {
   const [topic, setTopic] = useState('');
@@ -23,18 +24,7 @@ const CreateSession = () => {
     };
 
     try {
-      const response = await fetch('https://localhost:7002/api/Mentor/Create/Session', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(sessionData),
-        credentials: 'include', // Чтобы отправить куки (если они есть)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create session');
-      }
+      await SessionService.CreateSession(sessionData);
 
       // Здесь не парсим JSON, просто показываем успешное сообщение
       setSuccessMessage("Session created successfully");
