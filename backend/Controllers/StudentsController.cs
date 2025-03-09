@@ -166,6 +166,7 @@ namespace Portfolio.Controllers
             }
 
             _sessionrep.DeleteSessionRegistration(registration);
+            session.CurrentStudents -= 1;
             await _sessionrep.SaveAsync();
 
             return Ok("Student successfully logged out of the session");
