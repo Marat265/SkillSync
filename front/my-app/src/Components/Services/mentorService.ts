@@ -39,7 +39,7 @@ export const MentorService = {
             const errorText = await response.text(); // Ждем текст ошибки
             throw new Error(errorText || "Failed to add skill");
           }
-          return response.json();
+          return response.text();
     },
 
     async DeleteSkill(skillName: string){
@@ -52,7 +52,7 @@ export const MentorService = {
             const errorText = await response.text(); // Ждем текст ошибки
             throw new Error(errorText || "Failed to remove skill");
           }
-          return response.json();
+          return response.text();
     },
 
 

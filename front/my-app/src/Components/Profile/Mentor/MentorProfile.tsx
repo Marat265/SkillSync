@@ -37,8 +37,8 @@ const MentorProfile = () => {
 
   const handleAddSkill = async (skill: string) => {
     try {
-      await MentorService.AddSkill(skill);
-      setSuccessMessage("Skill added successfully!");
+      var text = await MentorService.AddSkill(skill);
+      setSuccessMessage(text);
       setError(null);
       setMentor((prevMentor) =>
         prevMentor ? { ...prevMentor, skills: [...prevMentor.skills, skill] } : null
@@ -50,9 +50,9 @@ const MentorProfile = () => {
 
   const handleDeleteSkill = async (skillName: string) => {
     try {
-      await MentorService.DeleteSkill(skillName);
+      var text = await MentorService.DeleteSkill(skillName);
 
-      setSuccessMessage("Skill removed successfully!");
+      setSuccessMessage(text);
       setError(null);
       setMentor((prevMentor) =>
         prevMentor ? { ...prevMentor, skills: prevMentor.skills.filter((s) => s !== skillName) } : null
