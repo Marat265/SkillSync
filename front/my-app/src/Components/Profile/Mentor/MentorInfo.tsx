@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../../UI/Button";
 
 type MentorInfoProps = {
   name: string;
@@ -36,19 +37,25 @@ const MentorInfo: React.FC<MentorInfoProps> = ({ name, email, createdAt, totalRe
                 onChange={(e) => setNewName(e.target.value)}
                 className="form-control mb-2"
               />
-              <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
+              {/* <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
                 Save Name
-              </button>
-              <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
+              </button> */}
+              <Button text="Save Name" onClick={handleNameChange} className="btn btn-primary btn-sm" />
+
+              {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
                 Cancel
-              </button>
+              </button> */}
+              <Button text="Cancel" onClick={() => setIsEditingName(false)} className="btn btn-secondary btn-sm" />
+              
             </div>
           ) : (
             <div>
               <p className="mb-1"><strong>Name:</strong> {name}</p>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
+              {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
                 Edit Name
-              </button>
+              </button> */}
+              <Button text="Edit Name" onClick={() => setIsEditingName(true)} className="btn btn-outline-secondary btn-sm"/>
+
             </div>
           )}
         </div>
@@ -61,19 +68,22 @@ const MentorInfo: React.FC<MentorInfoProps> = ({ name, email, createdAt, totalRe
                 onChange={(e) => setNewEmail(e.target.value)}
                 className="form-control mb-2"
               />
-              <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
+              {/* <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
                 Save Email
-              </button>
-              <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
+              </button> */}
+              <Button text="Save Email" onClick={handleEmailChange} className="btn btn-primary btn-sm"/>
+              {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
                 Cancel
-              </button>
+              </button> */}
+              <Button text="Cancel" onClick={() => setIsEditingEmail(false)} className="btn btn-secondary btn-sm"/>
             </div>
           ) : (
             <div>
               <p className="mb-1"><strong>Email:</strong> {email}</p>
-              <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
+              {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
                 Edit Email
-              </button>
+              </button> */}
+              <Button text="Edit Email" onClick={() => setIsEditingEmail(true)} className="btn btn-outline-secondary btn-sm"/>
             </div>
           )}
         </div>

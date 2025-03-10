@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { handleError } from "../../../Helpers/errorHandler";
 import { SessionService } from "../../Services/sessionService";
+import Button from "../../UI/Button";
 
 type UserDto = {
   id: string;
@@ -154,19 +155,22 @@ const StudentProfile = () => {
                       onChange={(e) => setNewName(e.target.value)}
                       className="form-control mb-2"
                     />
-                    <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
+                    {/* <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
                       Save Name
-                    </button>
-                    <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
+                    </button> */}
+                    <Button text="Save Name"  onClick={handleNameChange} className="btn btn-primary btn-sm"/>
+                    {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
                       Cancel
-                    </button>
+                    </button> */}
+                    <Button text="Cancel"  onClick={() => setIsEditingName(false)}  className="btn btn-secondary btn-sm"/>
                   </div>
                 ) : (
                   <div>
                     <p className="mb-1"><strong>Name:</strong> {profile.name}</p>
-                    <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
+                    {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
                       Edit Name
-                    </button>
+                    </button> */}
+                    <Button text="Edit Name" onClick={() => setIsEditingName(true)} className="btn btn-outline-secondary btn-sm"/>
                   </div>
                 )}
               </div>
@@ -180,19 +184,22 @@ const StudentProfile = () => {
                     onChange={(e) => setNewEmail(e.target.value)}
                     className="form-control mb-2"
                   />
-                  <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
+                  {/* <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
                     Save Email
-                  </button>
-                  <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
+                  </button> */}
+                  <Button text="Save Email" onClick={handleEmailChange} className="btn btn-primary btn-sm"/>
+                  {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
                     Cancel
-                  </button>
+                  </button> */}
+                  <Button text="Cancel"onClick={() => setIsEditingEmail(false)} className="btn btn-secondary btn-sm" />
                 </div>
               ) : (
                 <div>
                   <p className="mb-1"><strong>Email:</strong> {profile.email}</p>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
+                  {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
                     Edit Email
-                  </button>
+                  </button> */}
+                  <Button text="Edit Email" onClick={() => setIsEditingEmail(true)} className="btn btn-outline-secondary btn-sm" />
                 </div>
               )}
             </div>
@@ -223,12 +230,13 @@ const StudentProfile = () => {
                         />
                       </div>
                     )}
-                    <button
+                    {/* <button
                       className="btn btn-danger btn-sm mt-2"
                       onClick={() => handleLogOutOfSession(session.sessionId)}
                     >
                       Log Out of Session
-                    </button>
+                    </button> */}
+                    <Button text="Log Out of Session"  onClick={() => handleLogOutOfSession(session.sessionId)}  className="btn btn-danger btn-sm mt-2"/>
                   </li>
                 ))}
               </ul>

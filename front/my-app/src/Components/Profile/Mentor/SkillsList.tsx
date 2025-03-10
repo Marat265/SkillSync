@@ -1,4 +1,5 @@
 import React from "react";
+import Button from "../../UI/Button";
 
 type SkillsListProps = {
   skills: string[];
@@ -14,9 +15,10 @@ const SkillsList: React.FC<SkillsListProps> = ({ skills, onDeleteSkill }) => {
           {skills.map((skill, index) => (
             <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
               {skill}
-              <button className="btn btn-danger btn-sm" onClick={() => onDeleteSkill(skill)}>
+              {/* <button className="btn btn-danger btn-sm" onClick={() => onDeleteSkill(skill)}>
                 Remove
-              </button>
+              </button> */}
+              <Button text="Remove" onClick={() => onDeleteSkill(skill)} className="btn btn-danger btn-sm"/>
             </li>
           ))}
         </ul>

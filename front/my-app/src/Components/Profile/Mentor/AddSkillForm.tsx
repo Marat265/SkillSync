@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Button from "../../UI/Button";
 
 type AddSkillFormProps = {
   onAddSkill: (skill: string) => void;
@@ -23,9 +24,8 @@ const AddSkillForm: React.FC<AddSkillFormProps> = ({ onAddSkill }) => {
         onChange={(e) => setNewSkill(e.target.value)}
         placeholder="Add new skill"
       />
-      <button className="btn btn-primary ms-2" onClick={handleSubmit}>
-        Add Skill
-      </button>
+
+      <Button text="Add Skill" onClick={handleSubmit} />
     </div>
   );
 };

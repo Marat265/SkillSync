@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Button from '../../Components/UI/Button';
 
 
 const LoginPage = () => {
@@ -66,7 +67,8 @@ const LoginPage = () => {
               autoComplete="current-password"
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100 mb-2">Login</button>
+          {/* <button type="submit" className="btn btn-primary w-100 mb-2">Login</button> */}
+          <Button text='Login'  className='btn btn-primary w-100 mb-2'/>
           <div className="text-center">
             <p className="text-muted">
               Don't have an account? <a href="/signup">Sign up</a>

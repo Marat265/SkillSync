@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { handleError } from '../../Helpers/errorHandler';
+import Button from '../../Components/UI/Button';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -114,9 +115,10 @@ const SignUpPage = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-100 mb-2">
+          {/* <button type="submit" className="btn btn-primary w-100 mb-2">
             Sign Up
-          </button>
+          </button> */}
+          <Button text='Sign Up' className='btn btn-primary w-100 mb-2'/>
           <div className="text-center">
             <p className="text-muted">
               Already have an account? <a href="/login">Login</a>
