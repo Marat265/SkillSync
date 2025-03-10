@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Импортируем useParams
+import { StudentService } from "../../Components/Services/studentService";
 
 // Тип данных для студента
 type StudentDto = {
@@ -18,22 +19,7 @@ const StudentDetails = () => {
 
     const fetchStudentDetails = async () => {
       try {
-        const response = await fetch(
-          `https://localhost:7002/api/Anonymous/Student/${studentId}`, // Обновляем URL для студентов
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Если нужно для авторизации
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch student details");
-        }
-
-        const data = await response.json();
+        const data = await StudentService.GetStudentDetails(studentId);
         setStudent(data);
       } catch (err: any) {
         setError(err.message);

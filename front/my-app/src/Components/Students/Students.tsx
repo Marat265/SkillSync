@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
+import { StudentService } from '../Services/studentService';
 
 type UserDto = {
   id: string;
@@ -18,17 +19,7 @@ const Students = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('https://localhost:7002/api/Anonymous/Students', {
-          method: 'GET',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Важно! Это заставляет браузер отправлять куки
-      })
-        if (!response.ok) {
-          throw new Error('Failed to fetch students');
-        }
-        const data = await response.json();
+        const data = await StudentService.GetAllStudents();
         setStudents(data);
       } catch (err: any) {
         setError(err.message);
