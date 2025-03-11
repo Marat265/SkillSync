@@ -35,6 +35,40 @@ export const StudentService = {
             throw new Error("Failed to fetch student details");
           }
           return response.json();
+    },
+
+    async GetProfile(){
+      const response = await fetch("https://localhost:7002/api/Students/profile", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch student profile");
+      }
+
+      return response.json();
+    },
+
+
+    async UpdateStudentProfile(name: string, email: string){
+       const response = await fetch("https://localhost:7002/api/Students/profile", {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name, email }),
+              credentials: "include",
+            });
+      
+            if (!response.ok) {
+              const errorText = await handleError(response);
+              throw new Error(errorText);
+            }
+      
     }
 
 };
