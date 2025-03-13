@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
 import { MentorService } from '../Services/mentorService';
+import { joinChat } from '../../Functions/JoinChat';
 
 type UserDto = {
   id: string;
@@ -68,6 +69,7 @@ const Mentors = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                     <Button text='View' onClick={() => handleNavigation(mentor.id)} />
+                    <Button text='Chat' onClick={() => joinChat(mentor.id)} className='btn btn-outline-success'/>
                     </div>
                     <small className="text-body-secondary">9 mins</small>
                   </div>
