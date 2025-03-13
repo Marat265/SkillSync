@@ -9,6 +9,7 @@ using Portfolio.Models;
 using Portfolio.Seed;
 using Portfolio.Token;
 using Skillsync.Helpers;
+using Skillsync.Hubs;
 using Skillsync.Interfaces;
 using Skillsync.Repositories;
 using Skillsync.Services;
@@ -72,6 +73,7 @@ builder.Services.AddIdentity<Users, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddSignalR();
 
 
 builder.Services.AddAutoMapper(typeof(MappingProfile)); 
@@ -113,5 +115,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
+
 
 app.Run();
