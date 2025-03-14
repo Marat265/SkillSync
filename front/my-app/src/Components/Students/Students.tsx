@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Button from '../UI/Button';
 import { useNavigate } from 'react-router-dom';
 import { StudentService } from '../Services/studentService';
+import { joinChat } from '../../Functions/JoinChat';
+import ChatWindow from '../Chat/ChatWindow';
 
 type UserDto = {
   id: string;
@@ -14,6 +16,8 @@ type UserDto = {
 const Students = () => {
   const [students, setStudents] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
+   const [isChatOpen, setIsChatOpen] = useState(false);
+    const [currentMentor, setCurrentMentor] = useState<UserDto | null>(null);
   const navigate = useNavigate();
   // Используем useEffect для загрузки данных при монтировании компонента
   useEffect(() => {
@@ -34,6 +38,12 @@ const Students = () => {
     navigate(`/Student/${studentId}`); 
   };
 
+
+    const handleChatOpen = (student: UserDto) => {
+      setCurrentMentor(student);
+      setIsChatOpen(true);
+      joinChat(student.id);
+    };
 
   return (
     <div className="album py-5 bg-body-tertiary">
@@ -70,6 +80,7 @@ const Students = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                     <Button text='View' onClick={() => handleNavigation(student.id)} />
+                    <Button text="Chat" onClick={() => handleChatOpen(student)} className="btn btn-outline-success" />
                     </div>
                     <small className="text-body-secondary">9 mins</small>
                   </div>
@@ -79,6 +90,9 @@ const Students = () => {
           ))}
         </div>
       </div>
+      {isChatOpen && currentMentor && (
+        <ChatWindow onClose={() => setIsChatOpen(false)} />
+      )}
     </div>
   );
 };

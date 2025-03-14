@@ -9,5 +9,12 @@ namespace Skillsync.Hubs
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, userId);
         }
+
+        public async Task SendMessage(string user, string message)
+        {
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
+        }
+
+
     }
 }
