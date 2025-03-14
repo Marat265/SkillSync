@@ -12,12 +12,13 @@ type UserDto = {
 };
 
 const Mentors = () => {
- const [mentors, setMentors] = useState<UserDto[]>([]);
+  const [mentors, setMentors] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
   // Используем useEffect для загрузки данных при монтировании компонента
   useEffect(() => {
-    const fetchStudents = async () => {
+    const fetchMentors = async () => {
       try {
         const data = await MentorService.GetAllMentors();
         setMentors(data);
@@ -26,13 +27,13 @@ const Mentors = () => {
       }
     };
 
-    fetchStudents();
+    fetchMentors();
   }, []);
 
-  const handleNavigation = (mentorId: string) => {
-    navigate(`/mentors/${mentorId}`); 
-  };
 
+  const handleNavigation = (mentorId: string) => {
+    navigate(`/mentors/${mentorId}`);
+  };
 
   return (
     <div className="album py-5 bg-body-tertiary">
@@ -83,4 +84,4 @@ const Mentors = () => {
   );
 }
 
-export default Mentors
+export default Mentors;

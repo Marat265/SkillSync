@@ -5,9 +5,9 @@ namespace Skillsync.Hubs
 {
     public class ChatHub: Hub
     {
-        public async Task JoinChat(Users user)
+        public async Task JoinChat(string userId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, user.Id);
+            await Groups.AddToGroupAsync(Context.ConnectionId, userId);
         }
     }
 }

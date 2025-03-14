@@ -15,6 +15,7 @@ import MentorDetails from './Pages/Mentors/MentorDetails';
 import StudentDetails from './Pages/Students/StudentDetails';
 import MentorProfile from './Components/Profile/Mentor/MentorProfile';
 import StudentProfile from './Components/Profile/Student/StudentProfile';
+// import ChatPage from './Pages/Chat/ChatPage';
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
           <Route path="/session/:sessionId" element={<SessionDetails />} />
           <Route path="/mentors/:mentorId" element={<MentorDetails />} />
           <Route path="/student/:studentId" element={<StudentDetails />} />
+
+          {/* <Route path="/chat/:mentorId" element={<ChatPage />} /> */}
 
           <Route path="/createsession" element={<CreateSession />} />
           <Route path="/sessions" element={<Sessions />} />
