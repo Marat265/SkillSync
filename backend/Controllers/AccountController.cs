@@ -80,7 +80,7 @@ namespace Portfolio.Controllers
 
             var role = await _userManager.GetRolesAsync(user);
 
-            return Ok(new {role});
+            return Ok(new {role, userName = user.Name});
         }
 
 

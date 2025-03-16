@@ -29,7 +29,12 @@ const LoginPage = () => {
         throw new Error(`${errorText || 'Нет данных'}`);
       }
       const data = await response.json(); // Читаем JSON-ответ
-      localStorage.setItem('user', JSON.stringify({ email, isAuthenticated: true, role: data.role}));
+      localStorage.setItem('user', JSON.stringify({
+         email, 
+         isAuthenticated: true,
+          role: data.role,  
+          userName: data.userName
+        }));
       navigate('/');
     } catch (error: any) {
       console.error('Ошибка при входе:', error.message);

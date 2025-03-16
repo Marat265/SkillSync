@@ -16,7 +16,6 @@ const Mentors = () => {
   const [mentors, setMentors] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [currentMentor, setCurrentMentor] = useState<UserDto | null>(null);
 
   const navigate = useNavigate();
 
@@ -37,10 +36,12 @@ const Mentors = () => {
     navigate(`/mentors/${mentorId}`);
   };
 
-  const handleChatOpen = (mentor: UserDto) => {
-    setCurrentMentor(mentor);
+  const handleChatOpen = () => {
     setIsChatOpen(true);
-    joinChat(mentor.id);
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+     const userName = userData.userName;
+     const userEmail = userData.email;
+    joinChat(userName, userEmail);
   };
 
   return (
@@ -86,7 +87,8 @@ const Mentors = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                       <Button text="View" onClick={() => handleNavigation(mentor.id)} />
-                      <Button text="Chat" onClick={() => handleChatOpen(mentor)} className="btn btn-outline-success" />
+                       
+                      <Button text="Chat" onClick={() => handleChatOpen()} className="btn btn-outline-success" />
                     </div>
                     <small className="text-body-secondary">9 mins</small>
                   </div>
@@ -98,7 +100,7 @@ const Mentors = () => {
       </div>
 
       {/* Рендерим чат, если он открыт */}
-      {isChatOpen && currentMentor && (
+      {isChatOpen && (
         <ChatWindow onClose={() => setIsChatOpen(false)} />
       )}
     </div>

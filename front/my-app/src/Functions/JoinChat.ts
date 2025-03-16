@@ -1,19 +1,22 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 
-export const joinChat = async (userId: string) => {
+export const joinChat = async (UserName:string, ChatRoom:string) => {
   const connection = new HubConnectionBuilder()
-  .withUrl("https://localhost:7002/chatHub", {
-    withCredentials: true, // Убедитесь, что credentials передаются
+  .withUrl("https://localhost:7002/chatHub")
+  .withAutomaticReconnect()
+  .build()
+
+  connection.on("ReceiveMessage", (userName, message) => {
+    console.log(userName);
+    console.log(message);
   })
-    .configureLogging(LogLevel.Information)
-    .withAutomaticReconnect()
-    .build();
+
   try {
       await connection.start();
-      await connection.invoke("JoinChat", userId);
+      await connection.invoke("JoinChat", {UserName, ChatRoom});
     
   } catch (error) {
-    console.error("Ошибка подключения:", error);
+    console.log(error);
     
   }
 };

@@ -17,7 +17,7 @@ const Students = () => {
   const [students, setStudents] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
    const [isChatOpen, setIsChatOpen] = useState(false);
-    const [currentMentor, setCurrentMentor] = useState<UserDto | null>(null);
+   
   const navigate = useNavigate();
   // Используем useEffect для загрузки данных при монтировании компонента
   useEffect(() => {
@@ -40,9 +40,12 @@ const Students = () => {
 
 
     const handleChatOpen = (student: UserDto) => {
-      setCurrentMentor(student);
+      const userData = JSON.parse(localStorage.getItem('user') || '{}');
+      const userName = userData.userName;
+      const userEmail = userData.email;
+     joinChat(userName, userEmail);
       setIsChatOpen(true);
-      joinChat(student.id);
+      joinChat(userName, userEmail);
     };
 
   return (
@@ -90,7 +93,7 @@ const Students = () => {
           ))}
         </div>
       </div>
-      {isChatOpen && currentMentor && (
+      {isChatOpen && (
         <ChatWindow onClose={() => setIsChatOpen(false)} />
       )}
     </div>
