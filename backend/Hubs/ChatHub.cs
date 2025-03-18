@@ -16,13 +16,6 @@ namespace Skillsync.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, connection.ChatRoom);
             await Clients.Group(connection.ChatRoom).ReceiveMessage("Admin",$"{ connection.UserName} присоеденился к чату" );
         }
-
-        //public async Task SendMessage(string user, string message)
-        //{
-        //    await Clients.All.SendAsync("ReceiveMessage", user, message);
-        //}
-
-
     }
 
     public class UserConnection

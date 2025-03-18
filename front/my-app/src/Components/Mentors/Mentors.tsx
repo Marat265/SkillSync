@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
+import * as signalR from "@microsoft/signalr";
 import Button from "../UI/Button";
 import { useNavigate } from "react-router-dom";
 import { MentorService } from "../Services/mentorService";
-import { joinChat } from "../../Functions/JoinChat";
-import ChatWindow from "../Chat/ChatWindow";
+import Chat from "../Chat/Chat";
 
 type UserDto = {
   id: string;
@@ -16,7 +16,9 @@ const Mentors = () => {
   const [mentors, setMentors] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
-
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
+  const [messages, setMessages] = useState<{ user: string; text: string }[]>([]);
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,12 +38,42 @@ const Mentors = () => {
     navigate(`/mentors/${mentorId}`);
   };
 
-  const handleChatOpen = () => {
-    setIsChatOpen(true);
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-     const userName = userData.userName;
-     const userEmail = userData.email;
-    joinChat(userName, userEmail);
+  const handleChatOpen = async (mentor:UserDto) => {
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    const userName = userData.userName;
+    const userEmail = userData.email;
+
+    if (!userName || !userEmail) {
+      alert("Ошибка: не удалось получить данные пользователя");
+      return;
+    }
+
+    const chatId =  [userEmail, mentor.email].sort().join("_"); 
+
+    const conn = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7002/chatHub")
+      .withAutomaticReconnect()
+      .build();
+
+    conn.on("ReceiveMessage", (user, text) => {
+      setMessages((prev) => [...prev, { user, text }]);
+    });
+
+    try {
+      await conn.start();
+      await conn.invoke("JoinChat",{userName, ChatRoom:chatId});
+      setConnection(conn);
+      setIsChatOpen(true);
+    } catch (error) {
+      console.log("Ошибка подключения к SignalR:", error);
+    }
+  };
+
+  const handleChatClose = () => {
+    setIsChatOpen(false);
+    if (connection) {
+      connection.stop();
+    }
   };
 
   return (
@@ -87,8 +119,11 @@ const Mentors = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="btn-group">
                       <Button text="View" onClick={() => handleNavigation(mentor.id)} />
-                       
-                      <Button text="Chat" onClick={() => handleChatOpen()} className="btn btn-outline-success" />
+                      <Button
+                        text="Chat"
+                        onClick={() => handleChatOpen(mentor)}
+                        className="btn btn-outline-success"
+                      />
                     </div>
                     <small className="text-body-secondary">9 mins</small>
                   </div>
@@ -99,9 +134,13 @@ const Mentors = () => {
         </div>
       </div>
 
-      {/* Рендерим чат, если он открыт */}
       {isChatOpen && (
-        <ChatWindow onClose={() => setIsChatOpen(false)} />
+        <div className="chat-container">
+          <div className="chat-close" onClick={handleChatClose}>
+            &#10006;
+          </div>
+          <Chat messages={messages} />
+        </div>
       )}
     </div>
   );

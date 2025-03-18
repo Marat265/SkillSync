@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import Button from '../UI/Button';
-import { useNavigate } from 'react-router-dom';
-import { StudentService } from '../Services/studentService';
-import { joinChat } from '../../Functions/JoinChat';
-import ChatWindow from '../Chat/ChatWindow';
+import React, { useState, useEffect } from "react";
+import * as signalR from "@microsoft/signalr";
+import Button from "../UI/Button";
+import { useNavigate } from "react-router-dom";
+import { StudentService } from "../Services/studentService";
+import Chat from "../Chat/Chat";
 
 type UserDto = {
   id: string;
   name: string;
   email: string;
-  image:string;
-  // добавь другие поля, если они есть
+  image: string;
 };
 
 const Students = () => {
   const [students, setStudents] = useState<UserDto[]>([]);
   const [error, setError] = useState<string | null>(null);
-   const [isChatOpen, setIsChatOpen] = useState(false);
-   
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
+  const [messages, setMessages] = useState<{ user: string; text: string }[]>([]);
+  
   const navigate = useNavigate();
-  // Используем useEffect для загрузки данных при монтировании компонента
+
   useEffect(() => {
     const fetchStudents = async () => {
       try {
@@ -33,20 +34,48 @@ const Students = () => {
     fetchStudents();
   }, []);
 
-  
   const handleNavigation = (studentId: string) => {
-    navigate(`/Student/${studentId}`); 
+    navigate(`/Student/${studentId}`);
   };
 
-
-    const handleChatOpen = (student: UserDto) => {
-      const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      const userName = userData.userName;
-      const userEmail = userData.email;
-     joinChat(userName, userEmail);
+  const handleChatOpen = async (student: UserDto) => {
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    const userName = userData.userName;
+    const userEmail = userData.email;
+  
+    if (!userName || !userEmail) {
+      alert("Ошибка: не удалось получить данные пользователя");
+      return;
+    }
+  
+    const chatId =  [userEmail, student.email].sort().join("_");  // Создаем ID чата по email
+  
+    const conn = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7002/chatHub")
+      .withAutomaticReconnect()
+      .build();
+  
+    conn.on("ReceiveMessage", (user, text) => {
+      setMessages((prev) => [...prev, { user, text }]);
+    });
+  
+    try {
+      await conn.start();
+      await conn.invoke("JoinChat", {userName, ChatRoom:chatId}); // Подключаемся к группе по chatId
+      setConnection(conn);
       setIsChatOpen(true);
-      joinChat(userName, userEmail);
-    };
+    } catch (error) {
+      console.log("Ошибка подключения к SignalR:", error);
+    }
+  };
+  
+
+  const handleChatClose = () => {
+    setIsChatOpen(false);
+    if (connection) {
+      connection.stop();
+    }
+  };
 
   return (
     <div className="album py-5 bg-body-tertiary">
@@ -93,8 +122,14 @@ const Students = () => {
           ))}
         </div>
       </div>
+
       {isChatOpen && (
-        <ChatWindow onClose={() => setIsChatOpen(false)} />
+        <div className="chat-container">
+          <div className="chat-close" onClick={handleChatClose}>
+            &#10006;
+          </div>
+          <Chat messages={messages} />
+        </div>
       )}
     </div>
   );
