@@ -4,6 +4,7 @@ import Button from "../UI/Button";
 import { useNavigate } from "react-router-dom";
 import { StudentService } from "../Services/studentService";
 import Chat from "../Chat/Chat";
+import { sendMessage } from "@microsoft/signalr/dist/esm/Utils";
 
 type UserDto = {
   id: string;
@@ -70,6 +71,14 @@ const Students = () => {
   };
   
 
+  const sendMessage = (message:string) => {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.invoke("SendMessage", message).catch((err) => console.error("Ошибка отправки сообщения:", err));
+    } else {
+      console.warn("Соединение с сервером отсутствует");
+    }
+  }
+
   const handleChatClose = () => {
     setIsChatOpen(false);
     if (connection) {
@@ -125,10 +134,7 @@ const Students = () => {
 
       {isChatOpen && (
         <div className="chat-container">
-          <div className="chat-close" onClick={handleChatClose}>
-            &#10006;
-          </div>
-          <Chat messages={messages} />
+            <Chat messages={messages} sendMessage={sendMessage} closeChat={handleChatClose} />
         </div>
       )}
     </div>

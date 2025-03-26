@@ -69,6 +69,14 @@ const Mentors = () => {
     }
   };
 
+  const sendMessage = (message:string) => {
+    if (connection && connection.state === signalR.HubConnectionState.Connected) {
+      connection.invoke("SendMessage", message).catch((err) => console.error("Ошибка отправки сообщения:", err));
+    } else {
+      console.warn("Соединение с сервером отсутствует");
+    }
+  }
+
   const handleChatClose = () => {
     setIsChatOpen(false);
     if (connection) {
@@ -136,10 +144,7 @@ const Mentors = () => {
 
       {isChatOpen && (
         <div className="chat-container">
-          <div className="chat-close" onClick={handleChatClose}>
-            &#10006;
-          </div>
-          <Chat messages={messages} />
+              <Chat messages={messages} sendMessage={sendMessage} closeChat={handleChatClose}/>
         </div>
       )}
     </div>
