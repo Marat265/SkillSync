@@ -38,7 +38,7 @@ namespace Portfolio.Controllers
         public async Task<IActionResult> GetSession(int sessionId)
         {
             var session = await _sessionrep.GetSessionWithMentorByIdAsync(sessionId);
-
+                
             if (session == null)
             {
                 return NotFound("Session not found");
