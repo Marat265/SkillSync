@@ -43,5 +43,36 @@ namespace Tests
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(OkObjectResult));
         }
+
+
+        [Fact]
+        public async void AnonymusController_GetSessions_ReturnOK()
+        {
+            //Arrange
+            var sessions = new List<Session>
+            {
+                A.Fake<Session>(),
+                A.Fake<Session>()
+            }; 
+
+            var sessiondtos = new List<SessionDto>
+            {
+              A.Fake<SessionDto>(),
+              A.Fake<SessionDto>()
+            }; 
+
+            A.CallTo(() => _sessionrep.GetAllSessionsWithMentorsAsync()).Returns(Task.FromResult(sessions));
+            A.CallTo(() => _mapper.Map<List<SessionDto>>(sessions)).Returns(sessiondtos);
+            var controller = new AnonymousController(_mapper, _sessionrep, _studentrep, _mentorrep);
+
+            //Act
+            var result = await controller.GetSessions();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+        }
+
+
     }
 }
