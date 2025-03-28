@@ -74,5 +74,102 @@ namespace Tests
         }
 
 
+
+        [Fact]
+        public async void AnnonymusController_GetStudents_ReturnOK()
+        {
+            //Arrange
+            var students = new List<Users>
+            {
+                A.Fake<Users>(),
+                A.Fake<Users>()
+            };
+
+            var sessiondtos = new List<UserDto>
+            {
+              A.Fake<UserDto>(),
+              A.Fake<UserDto>()
+            };
+            A.CallTo(() => _studentrep.GetStudentsAsync()).Returns(Task.FromResult(students));
+            A.CallTo(() => _mapper.Map<List<UserDto>>(students)).Returns(sessiondtos);
+            var controller = new AnonymousController(_mapper, _sessionrep, _studentrep, _mentorrep);
+            
+            //Act
+            var result = await controller.GetStudents();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
+
+
+        [Fact]
+        public async void AnnonymusController_GetStudentsByID_ReturnOK()
+        {
+            //Arrange
+            string studentid = "1";
+            var student = A.Fake<Users>();
+            var sessiondto = A.Fake<UserDto>();
+            A.CallTo(() => _studentrep.GetStudentByIdAsync(studentid)).Returns(Task.FromResult(student));
+            A.CallTo(() => _mapper.Map<UserDto>(student)).Returns(sessiondto);
+            var controller = new AnonymousController(_mapper, _sessionrep, _studentrep, _mentorrep);
+
+            //Act
+            var result = await controller.GetStudents(studentid);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
+        [Fact]
+        public async void AnnonymusController_GetMentors_ReturnOK()
+        {
+            //Arrange
+            var mentors = new List<Users>
+            {
+                A.Fake<Users>(),
+                A.Fake<Users>()
+            };
+
+            var mentorsdtos = new List<UserDto>
+            {
+              A.Fake<UserDto>(),
+              A.Fake<UserDto>()
+            };
+            A.CallTo(() => _mentorrep.GetAllMentorsAsync()).Returns(Task.FromResult(mentors));
+            A.CallTo(() => _mapper.Map<List<UserDto>>(mentors)).Returns(mentorsdtos);
+            var controller = new AnonymousController(_mapper, _sessionrep, _studentrep, _mentorrep);
+
+            //Act
+            var result = await controller.GetMentors();
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
+
+        [Fact]
+        public async void AnnonymusController_GetMentorsByID_ReturnOK()
+        {
+            //Arrange
+            string mentorId = "1";
+            var mentor = A.Fake<Users>();
+            var mentordto = A.Fake<UserDto>();
+            
+            A.CallTo(() => _mentorrep.GetMentorByIdAsync(mentorId)).Returns(Task.FromResult(mentor));
+            A.CallTo(() => _mapper.Map<UserDto>(mentor)).Returns(mentordto);
+            var controller = new AnonymousController(_mapper, _sessionrep, _studentrep, _mentorrep);
+
+            //Act
+            var result = await controller.GetMentor(mentorId);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
     }
 }
