@@ -6,11 +6,11 @@ using Skillsync.Repositories;
 
 namespace Skillsync.Services
 {
-    public class SessionRepository : ISessionRepository
+    public class SessionService : ISessionService
     {
         private readonly ApplicationDbContext _context;
 
-        public SessionRepository(ApplicationDbContext context)
+        public SessionService(ApplicationDbContext context)
         {
             _context = context;
         }

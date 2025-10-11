@@ -19,11 +19,11 @@ namespace Portfolio.Controllers
     [Authorize(Roles = "Student")]
     public class StudentsController : ControllerBase
     {
-        private readonly ISessionRepository _sessionrep;
-        private readonly IStudentRepository _studentrep;
+        private readonly ISessionService _sessionrep;
+        private readonly IStudentService _studentrep;
         private readonly IMapper _mapper;
 
-        public StudentsController(ISessionRepository SessionRepository, IStudentRepository studentRepository, IMapper mapper)
+        public StudentsController(ISessionService SessionRepository, IStudentService studentRepository, IMapper mapper)
         {
             _mapper = mapper;
             _sessionrep = SessionRepository;

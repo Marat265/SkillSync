@@ -12,16 +12,16 @@ namespace Tests
 {
     public class AnonymusControllerTests
     {
-        private readonly ISessionRepository _sessionrep;
-        private readonly IStudentRepository _studentrep;
-        private readonly IMentorRepository _mentorrep;
+        private readonly ISessionService _sessionrep;
+        private readonly IStudentService _studentrep;
+        private readonly IMentorService _mentorrep;
         private readonly IMapper _mapper;
 
         public AnonymusControllerTests()
         {
-            _sessionrep = A.Fake<ISessionRepository>();
-            _studentrep = A.Fake<IStudentRepository>();
-            _mentorrep = A.Fake<IMentorRepository>();
+            _sessionrep = A.Fake<ISessionService>();
+            _studentrep = A.Fake<IStudentService>();
+            _mentorrep = A.Fake<IMentorService>();
             _mapper = A.Fake<IMapper>();
         }
 

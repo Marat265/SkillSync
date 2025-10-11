@@ -3,7 +3,7 @@ using Portfolio.Models;
 
 namespace Skillsync.Repositories
 {
-    public interface ISessionRepository
+    public interface ISessionService
     {
         Task<Session> GetSessionWithMentorByIdAsync(int sessionId); //anonymus
         Task<List<Session>> GetAllSessionsWithMentorsAsync(); //anonymus

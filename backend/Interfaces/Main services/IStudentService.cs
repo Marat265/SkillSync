@@ -3,7 +3,7 @@ using Portfolio.Models;
 
 namespace Skillsync.Repositories
 {
-    public interface IStudentRepository
+    public interface IStudentService
     {
         Task<List<Users>> GetStudentsAsync();  //anonymus GetStudents
         Task<Users> GetStudentByIdAsync(string id); //anonymus GetStudents

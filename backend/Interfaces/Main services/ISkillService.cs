@@ -2,7 +2,7 @@
 
 namespace Skillsync.Repositories
 {
-    public interface ISkillRepository
+    public interface ISkillService
     {
         Task<Skills> FindSkillByNameAsync(string skillName);
         Task<MentorSkills> FindMentorSkillByIdAsync(string mentorID, int skillID);

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dto.Auth;
 using Portfolio.Interfaces.Auth;
 using Portfolio.Models;
-using Skillsync.Interfaces;
+using Skillsync.Interfaces.Image;
 
 namespace Portfolio.Controllers
 {

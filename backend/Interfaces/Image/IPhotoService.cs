@@ -1,6 +1,6 @@
 ﻿using CloudinaryDotNet.Actions;
 
-namespace Skillsync.Interfaces
+namespace Skillsync.Interfaces.Image
 {
     public interface IPhotoService
     {

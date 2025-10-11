@@ -2,7 +2,7 @@
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
 using Skillsync.Helpers;
-using Skillsync.Interfaces;
+using Skillsync.Interfaces.Image;
 
 namespace Skillsync.Services
 {

@@ -18,14 +18,14 @@ namespace Portfolio.Controllers
     [Authorize(Roles = "Mentor")]
     public class MentorController : ControllerBase
     {
-        private readonly ISessionRepository _sessionrep;
-        private readonly IMentorRepository _mentorrep;
-        private readonly ISkillRepository _skillrep;
+        private readonly ISessionService _sessionrep;
+        private readonly IMentorService _mentorrep;
+        private readonly ISkillService _skillrep;
         private readonly IMapper _mapper;
 
         public MentorController(
-            ISessionRepository repository, IMentorRepository mentorRepository, 
-            ISkillRepository skillRepository, IMapper mapper)
+            ISessionService repository, IMentorService mentorRepository,
+            ISkillService skillRepository, IMapper mapper)
         {
             _mapper = mapper;
             _sessionrep = repository;

@@ -18,14 +18,14 @@ namespace Portfolio.Controllers
     [AllowAnonymous]
     public class AnonymousController : ControllerBase
     {
-        private readonly ISessionRepository _sessionrep;
-        private readonly IStudentRepository _studentrep;
-        private readonly IMentorRepository _mentorrep;
+        private readonly ISessionService _sessionrep;
+        private readonly IStudentService _studentrep;
+        private readonly IMentorService _mentorrep;
         private readonly IMapper _mapper;
 
-        public AnonymousController(IMapper mapper, ISessionRepository SessionRepository, 
-            IStudentRepository studentRepository,
-             IMentorRepository mentorRepository) 
+        public AnonymousController(IMapper mapper, ISessionService SessionRepository,
+            IStudentService studentRepository,
+             IMentorService mentorRepository) 
         {
             _mapper = mapper;
             _sessionrep = SessionRepository;

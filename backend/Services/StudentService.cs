@@ -7,12 +7,12 @@ using System.Security.Claims;
 
 namespace Skillsync.Services
 {
-    public class StudentRepository : IStudentRepository
+    public class StudentService : IStudentService
     {
         private readonly UserManager<Users> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public StudentRepository(UserManager<Users> userManager,ApplicationDbContext context)
+        public StudentService(UserManager<Users> userManager,ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;

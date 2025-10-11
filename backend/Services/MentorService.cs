@@ -6,12 +6,12 @@ using Skillsync.Repositories;
 
 namespace Skillsync.Services
 {
-    public class MentorRespository : IMentorRepository
+    public class MentorService : IMentorService
     {
         private readonly UserManager<Users> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public MentorRespository(UserManager<Users> userManager, ApplicationDbContext applicationDbContext)
+        public MentorService(UserManager<Users> userManager, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _context = applicationDbContext;

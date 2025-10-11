@@ -10,7 +10,7 @@ using Portfolio.Seed;
 using Portfolio.Token;
 using Skillsync.Helpers;
 using Skillsync.Hubs;
-using Skillsync.Interfaces;
+using Skillsync.Interfaces.Image;
 using Skillsync.Repositories;
 using Skillsync.Services;
 using System.Text;
@@ -82,10 +82,10 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JwtOptions"));
 
 builder.Services.AddScoped<IJwtProvider, JwtProvider>();
-builder.Services.AddScoped<ISessionRepository, SessionRepository>();
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IMentorRepository, MentorRespository>();
-builder.Services.AddScoped<ISkillRepository, SkillRepository>();
+builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IMentorService, MentorService>();
+builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 

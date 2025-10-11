@@ -3,7 +3,7 @@ using Portfolio.Models;
 
 namespace Skillsync.Repositories
 {
-    public interface IMentorRepository
+    public interface IMentorService
     {
         Task<List<Users>> GetAllMentorsAsync(); //anonymus GetMentors
         Task<Users> GetMentorByIdAsync(string id);  //anonymus GetMentor

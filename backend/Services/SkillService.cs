@@ -5,10 +5,10 @@ using Skillsync.Repositories;
 
 namespace Skillsync.Services
 {
-    public class SkillRepository : ISkillRepository
+    public class SkillService : ISkillService
     {
         private readonly ApplicationDbContext _context;
-        public SkillRepository(ApplicationDbContext applicationDbContext)
+        public SkillService(ApplicationDbContext applicationDbContext)
         {
             _context = applicationDbContext;
         }
