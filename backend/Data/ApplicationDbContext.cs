@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Portfolio.Models;
 using Microsoft.AspNetCore.Http;
+using Skillsync.Models;
 
 namespace Portfolio.Data
 {
@@ -18,6 +19,7 @@ namespace Portfolio.Data
         public DbSet<SessionRegistration> SessionRegistrations { get; set; }
         public DbSet<Reviews> Reviews { get; set; }
         public DbSet<MentorSkills> MentorSkills { get;set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

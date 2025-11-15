@@ -50,5 +50,18 @@ namespace Skillsync.Services
             return tokenValue;
 
         }
+
+        public void AppendAuthCookie(HttpResponse response, string token)
+        {
+            response.Cookies.Append("token", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                //suspecious
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(30)
+            });
+        }
+
     }
 }

@@ -71,12 +71,7 @@ namespace Portfolio.Controllers
             var user = await _userManager.FindByNameAsync(model.Email);
             var token = await _jwtProvider.GenerateToken(user);
 
-            Response.Cookies.Append("token", token, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true,
-                Expires = DateTime.UtcNow.AddMinutes(30) 
-            });
+            _jwtProvider.AppendAuthCookie(Response, token);
 
             var role = await _userManager.GetRolesAsync(user);
 
