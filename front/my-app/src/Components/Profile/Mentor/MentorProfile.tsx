@@ -23,9 +23,12 @@ const MentorProfile = () => {
   useEffect(() => {
     const fetchMentorProfile = async () => {
       try {
+        console.log('🔄 Starting to fetch mentor profile...');
         const data = await MentorService.GetMentorProfile();
+        console.log('✅ mentor profile data received:', data);
         setMentor(data);
       } catch (err: any) {
+        console.error('❌ Error fetching mentor profile:', err);
         setError(err.message);
       } finally {
         setLoading(false); // Устанавливаем состояние загрузки в false

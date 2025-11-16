@@ -12,8 +12,14 @@ const Header = () => {
     // Проверяем, если информация о пользователе в localStorage
     const user = localStorage.getItem('user');
     if (user) {
-      setIsAuthenticated(true);
-      setMentor(isMentor()); // Проверяем, является ли пользователь ментором
+      try{
+        setIsAuthenticated(true);
+        const isUserMentor = isMentor();
+        console.log('👤 User role check - isMentor:', isUserMentor);
+        setMentor(isMentor()); // Проверяем, является ли пользователь ментором
+      }catch (error) {
+      console.error('❌ Error parsing user data:', error);
+    }
     }
   }); // Добавлен пустой массив зависимостей, чтобы `useEffect` выполнялся один раз
 

@@ -15,6 +15,7 @@ import MentorDetails from './Pages/Mentors/MentorDetails';
 import StudentDetails from './Pages/Students/StudentDetails';
 import MentorProfile from './Components/Profile/Mentor/MentorProfile';
 import StudentProfile from './Components/Profile/Student/StudentProfile';
+import GoogleCallBack from './Components/GoogleCallBack/GoogleCallBack';
 // import ChatPage from './Pages/Chat/ChatPage';
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
           <Route path="/student/profile" element={<StudentProfile />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/google-callback" element={<GoogleCallBack />} />
         </Routes>
       </div>
     </Router>
