@@ -2,28 +2,43 @@ import React from 'react'
 import StudentLists from '../../Pages/Students/StudentLists'
 import MentorLists from '../../Pages/Mentors/MentorLists'
 import { isMentor } from '../../Functions/IsMentor'
+import './Main.css';
 
-type Props = {}
-
-const Main = (props: Props) => {
+const Main = () => {
   return (
-    <main>
-    <section className="py-5 text-center container">
-      <div className="row py-lg-5">
-        <div className="col-lg-6 col-md-8 mx-auto">
-          <h1 className="fw-light">SkillSync</h1>
-          <p className="lead text-body-secondary">
-            SkillSync is your platform to connect with others, enhance your skills, and grow professionally. Join today and start your learning journey!
+    <div className="main-layout">
+      {/* Мягкий фон, который НЕ перекрывает кнопки */}
+      <div className="soft-bg"></div>
+      
+      <section className="hero-section">
+        <div className="container">
+          <div className="hero-card">
+            <span className="hero-badge">Educational Ecosystem</span>
+            <h1 className="hero-title">Skill<span>Sync</span></h1>
+            <p className="hero-text">
+              Build your future by connecting with experts or sharing your knowledge. 
+              The most efficient way to grow professionally in 2026.
             </p>
-          <p>
-            <a href="#" className="btn btn-primary my-2">Main call to action</a>
-            <a href="#" className="btn btn-secondary my-2">Secondary action</a>
-          </p>
+            <div className="hero-btns">
+              <button className="btn-primary-custom">Explore Platform</button>
+              <button className="btn-secondary-custom">Learn More</button>
+            </div>
+          </div>
         </div>
-      </div>
-    </section> 
-    {isMentor() ?  <StudentLists />  : <MentorLists />}
-  </main>
+      </section>
+
+      <section className="content-section">
+        <div className="container">
+          <div className="section-title-box">
+             <h2>{isMentor() ? "Active Students" : "Available Mentors"}</h2>
+             <div className="title-underline"></div>
+          </div>
+          <div className="list-card">
+            {isMentor() ? <StudentLists /> : <MentorLists />}
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
 

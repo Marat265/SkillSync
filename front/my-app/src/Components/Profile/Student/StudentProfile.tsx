@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { handleError } from "../../../Helpers/errorHandler";
 import { SessionService } from "../../Services/sessionService";
 import Button from "../../UI/Button";
 import { StudentService } from "../../Services/studentService";
+import './StudentProfile.css'; 
 
 type UserDto = {
   id: string;
   name: string;
   email: string;
-  image: string; // Добавляем аватар
+  image: string;
 };
 
 type SessionDto = {
@@ -25,7 +25,7 @@ type SessionDto = {
 type StudentProfileDto = {
   name: string;
   email: string;
-  image: string; // Добавляем аватар
+  image: string;
   sessions: SessionDto[];
 };
 
@@ -38,28 +38,23 @@ const StudentProfile = () => {
   const [newName, setNewName] = useState<string>("");
   const [newEmail, setNewEmail] = useState<string>("");
 
-  // Fetching profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const data = await StudentService.GetProfile();
-        console.log(data);
         setProfile(data);
-        setNewName(data.name); // Устанавливаем начальное значение для имени
-        setNewEmail(data.email); // Устанавливаем начальное значение для email
+        setNewName(data.name);
+        setNewEmail(data.email);
       } catch (err: any) {
         setError(err.message);
       }
     };
-
     fetchProfile();
   }, []);
 
-  // Update profile function
   const handleUpdateProfile = async (name: string, email: string) => {
     try {
       await StudentService.UpdateStudentProfile(name, email);
-
       setProfile((prevProfile) => ({ ...prevProfile!, name, email }));
       setSuccessMessage("Profile updated successfully!");
       setError(null);
@@ -81,12 +76,10 @@ const StudentProfile = () => {
   const handleLogOutOfSession = async (sessionId: number) => {
     try {
       await SessionService.LogOutOfSession(sessionId);
-      // Удаляем сессию из списка
       setProfile((prevProfile) => ({
         ...prevProfile!,
         sessions: prevProfile!.sessions.filter((session) => session.sessionId !== sessionId),
       }));
-
       setSuccessMessage("Successfully logged out of the session!");
       setError(null);
     } catch (err: any) {
@@ -99,132 +92,164 @@ const StudentProfile = () => {
       const timer = setTimeout(() => {
         setSuccessMessage(null);
         setError(null);
-      }, 2000);
-
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [successMessage, error]);
 
-  if (!profile) return <div className="text-center mt-5">Loading...</div>;
+  if (!profile) return (
+    <div className="profile-loading">
+        <div className="spinner"></div>
+    </div>
+  );
 
   return (
-    <div className="container d-flex justify-content-center mt-5">
-      <div className="card shadow-lg rounded-3" style={{ maxWidth: "600px" }}>
-        <div className="card-header bg-primary text-white text-center py-3">
-          <h3>Student Profile</h3>
-        </div>
-        <div className="card-body">
-          {/* Name and Avatar section */}
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div className="d-flex align-items-center">
-              <img
-                src={profile.image || "/default-avatar.png"} // Если аватар не задан, показываем дефолтный
-                alt="Student Avatar"
-                className="rounded-circle"
-                style={{ width: "50px", height: "50px", marginRight: "15px" }}
-              />
-              <div>
-                {isEditingName ? (
-                  <div>
-                    <input
-                      type="text"
-                      value={newName}
-                      onChange={(e) => setNewName(e.target.value)}
-                      className="form-control mb-2"
-                    />
-                    {/* <button className="btn btn-primary btn-sm" onClick={handleNameChange}>
-                      Save Name
-                    </button> */}
-                    <Button text="Save Name"  onClick={handleNameChange} className="btn btn-primary btn-sm"/>
-                    {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingName(false)}>
-                      Cancel
-                    </button> */}
-                    <Button text="Cancel"  onClick={() => setIsEditingName(false)}  className="btn btn-secondary btn-sm"/>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="mb-1"><strong>Name:</strong> {profile.name}</p>
-                    {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingName(true)}>
-                      Edit Name
-                    </button> */}
-                    <Button text="Edit Name" onClick={() => setIsEditingName(true)} className="btn btn-outline-secondary btn-sm"/>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div>
-              {isEditingEmail ? (
-                <div>
-                  <input
-                    type="email"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    className="form-control mb-2"
-                  />
-                  {/* <button className="btn btn-primary btn-sm" onClick={handleEmailChange}>
-                    Save Email
-                  </button> */}
-                  <Button text="Save Email" onClick={handleEmailChange} className="btn btn-primary btn-sm"/>
-                  {/* <button className="btn btn-secondary btn-sm" onClick={() => setIsEditingEmail(false)}>
-                    Cancel
-                  </button> */}
-                  <Button text="Cancel"onClick={() => setIsEditingEmail(false)} className="btn btn-secondary btn-sm" />
-                </div>
-              ) : (
-                <div>
-                  <p className="mb-1"><strong>Email:</strong> {profile.email}</p>
-                  {/* <button className="btn btn-outline-secondary btn-sm" onClick={() => setIsEditingEmail(true)}>
-                    Edit Email
-                  </button> */}
-                  <Button text="Edit Email" onClick={() => setIsEditingEmail(true)} className="btn btn-outline-secondary btn-sm" />
-                </div>
-              )}
+    <div className="profile-page-container">
+      <div className="profile-card">
+        
+        {/* Header Section */}
+        <div className="profile-header">
+          <div className="profile-avatar-container">
+            <img
+              src={profile.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
+              alt="Profile"
+              className="profile-avatar"
+            />
+            <div className="profile-title">
+                <h3>My Profile</h3>
+                <span className="profile-role">Student</span>
             </div>
           </div>
+        </div>
 
-          {/* Sessions section */}
-          <div>
-            <h4>Sessions</h4>
+        <div className="profile-body">
+          {/* Messages */}
+          {error && <div className="alert-box error"><i className="fas fa-exclamation-circle"></i> {error}</div>}
+          {successMessage && <div className="alert-box success"><i className="fas fa-check-circle"></i> {successMessage}</div>}
+
+          {/* Personal Info Grid */}
+         <div className="info-grid">
+  {/* Поле Имени */}
+  <div className="info-card">
+    <div className="info-icon">
+      <i className="fas fa-id-card"></i> 
+    </div>
+    <div className="info-content">
+      <label>Full Name</label>
+      {isEditingName ? (
+        <div className="edit-mode">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            className="profile-input"
+          />
+          <div className="action-buttons">
+            <Button text="Save" onClick={handleNameChange} className="btn-save-mini" />
+            <Button text="Cancel" onClick={() => setIsEditingName(false)} className="btn-cancel-mini" />
+          </div>
+        </div>
+      ) : (
+        <div className="display-mode">
+          <span className="user-data-text">{profile.name}</span>
+          <button className="btn-edit-styled" onClick={() => setIsEditingName(true)}>
+            <i className="fas fa-pen"></i>
+            <span>Edit</span>
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* Поле Email */}
+  <div className="info-card">
+    <div className="info-icon">
+      <i className="fas fa-at"></i>
+    </div>
+    <div className="info-content">
+      <label>Email Address</label>
+      {isEditingEmail ? (
+        <div className="edit-mode">
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            className="profile-input"
+          />
+          <div className="action-buttons">
+            <Button text="Save" onClick={handleEmailChange} className="btn-save-mini" />
+            <Button text="Cancel" onClick={() => setIsEditingEmail(false)} className="btn-cancel-mini" />
+          </div>
+        </div>
+      ) : (
+        <div className="display-mode">
+          <span className="user-data-text">{profile.email}</span>
+          <button className="btn-edit-styled" onClick={() => setIsEditingEmail(true)}>
+            <i className="fas fa-pen"></i>
+            <span>Edit</span>
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
+          {/* Sessions Section */}
+          <div className="sessions-section">
+            <h4 className="section-title">My Sessions</h4>
+            
             {profile.sessions.length > 0 ? (
-              <ul className="list-group mb-3">
+              <div className="sessions-grid">
                 {profile.sessions.map((session) => (
-                  <li key={session.sessionId} className="list-group-item">
-                    <h5>{session.topic}</h5>
-                    <p><strong>Start Time:</strong> {new Date(session.startTime).toLocaleString()}</p>
-                    <p><strong>Duration:</strong> {session.duration} hours</p>
-                    <p><strong>Max Students:</strong> {session.maxStudents}</p>
-                    <p><strong>Current Students:</strong> {session.currentStudents}</p>
-                    <p><strong>Status:</strong> {session.status === 0 ? 'Upcoming' : 'Completed'}</p>
+                  <div key={session.sessionId} className="session-card">
+                    <div className="session-header">
+                        <span className={`status-badge ${session.status === 0 ? 'upcoming' : 'completed'}`}>
+                            {session.status === 0 ? 'Upcoming' : 'Completed'}
+                        </span>
+                        <div className="session-date">
+                            <i className="far fa-calendar-alt"></i> {new Date(session.startTime).toLocaleDateString()}
+                        </div>
+                    </div>
+                    
+                    <h5 className="session-topic">{session.topic}</h5>
+                    
+                    <div className="session-details">
+                        <div className="detail-item">
+                            <i className="far fa-clock"></i> {new Date(session.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} ({session.duration}h)
+                        </div>
+                        <div className="detail-item">
+                            <i className="fas fa-users"></i> {session.currentStudents} / {session.maxStudents}
+                        </div>
+                    </div>
+
                     {session.mentor && (
-                      <div>
-                        <p><strong>Mentor:</strong> {session.mentor.name}</p>
-                        <p><strong>Email:</strong> {session.mentor.email}</p>
+                      <div className="mentor-info">
                         <img
-                          src={session.mentor.image || "/default-avatar.png"} // Аватар ментора
-                          alt="Mentor Avatar"
-                          className="rounded-circle"
-                          style={{ width: "30px", height: "30px", marginRight: "10px" }}
+                          src={session.mentor.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+                          alt="Mentor"
+                          className="mentor-avatar"
                         />
+                        <div className="mentor-text">
+                            <small>Mentor</small>
+                            <span>{session.mentor.name}</span>
+                        </div>
                       </div>
                     )}
-                    {/* <button
-                      className="btn btn-danger btn-sm mt-2"
-                      onClick={() => handleLogOutOfSession(session.sessionId)}
-                    >
-                      Log Out of Session
-                    </button> */}
-                    <Button text="Log Out of Session"  onClick={() => handleLogOutOfSession(session.sessionId)}  className="btn btn-danger btn-sm mt-2"/>
-                  </li>
+
+                    <Button 
+                        text="Log Out" 
+                        onClick={() => handleLogOutOfSession(session.sessionId)} 
+                        className="btn-logout-session"
+                    />
+                  </div>
                 ))}
-              </ul>
+              </div>
             ) : (
-              <p className="text-muted">No sessions registered</p>
+              <div className="empty-state">
+                <i className="fas fa-calendar-times"></i>
+                <p>No active sessions found.</p>
+              </div>
             )}
           </div>
-
-          {/* Error and success messages */}
-          {error && <div className="alert alert-danger">{error}</div>}
-          {successMessage && <div className="alert alert-success">{successMessage}</div>}
         </div>
       </div>
     </div>

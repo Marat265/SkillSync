@@ -42,7 +42,7 @@ const LoginPage = () => {
   }
   
   const handleGoogleLogin = () => {
-    window.location.href = 'https://localhost:7002/api/Account/google-login?returnUrl=https://localhost:3000';
+    window.location.href = 'https://localhost:7002/api/Account/google-login?returnUrl=https://localhost:3000/google-callback';
   };
 
   return (
