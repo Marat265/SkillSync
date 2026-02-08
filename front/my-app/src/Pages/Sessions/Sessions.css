@@ -1,0 +1,128 @@
+.session-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+  padding: 20px 0;
+}
+
+.session-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #edf2f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.session-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.session-header {
+  height: 10px;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.session-body {
+  padding: 24px;
+  flex-grow: 1;
+}
+
+.session-topic {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.session-info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  color: #718096;
+}
+
+.session-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #ebf8ff;
+  color: #3182ce;
+}
+
+.session-footer {
+  padding: 16px 24px;
+  background: #f7fafc;
+  border-top: 1px solid #edf2f7;
+  display: flex;
+  justify-content: space-between;
+}
+
+.session-page .btn-light {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #4a5568 !important;
+  padding: 8px 16px !important;
+  border-radius: 10px !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease;
+}
+
+.session-page .btn-light:hover {
+  background-color: #edf2f7 !important;
+  border-color: #cbd5e0 !important;
+}
+
+.session-page .btn-primary{
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%) !important;
+  border: none !important;
+  color: white !important;
+  padding: 12px 24px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(79, 172, 254, 0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.session-page .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(79, 172, 254, 0.4) !important;
+  filter: brightness(1.05);
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.upcoming { background: #e3f2fd; color: #1976d2; }
+.status-badge.completed { background: #e8f5e9; color: #2e7d32; }
+.status-badge.cancelled { background: #ffebee; color: #d32f2f; }
+
+.btn-logout-session {
+    background-color: #fff1f0 !important;
+    border: 1px solid #ffa39e !important;
+    color: #cf1322 !important;
+    width: 100%;
+    margin-top: 15px !important;
+    transition: all 0.3s;
+}
+
+.btn-logout-session:hover {
+    background-color: #ff4d4f !important;
+    color: white !important;
+}
+
+.sessions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}

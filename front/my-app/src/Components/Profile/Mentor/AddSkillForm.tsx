@@ -16,16 +16,20 @@ const AddSkillForm: React.FC<AddSkillFormProps> = ({ onAddSkill }) => {
   };
 
   return (
-    <div className="d-flex">
+    <div className="input-group custom-skill-input">
       <input
         type="text"
-        className="form-control"
+        className="form-control profile-input m-0"
         value={newSkill}
         onChange={(e) => setNewSkill(e.target.value)}
-        placeholder="Add new skill"
+        placeholder="E.g. React, Python, UI Design..."
       />
-
-      <Button text="Add Skill" onClick={handleSubmit} />
+      <button 
+        className="btn-save-mini px-4" 
+        onClick={() => { if(newSkill) onAddSkill(newSkill); setNewSkill(""); }}
+      >
+        <i className="fas fa-plus me-2"></i>Add
+      </button>
     </div>
   );
 };

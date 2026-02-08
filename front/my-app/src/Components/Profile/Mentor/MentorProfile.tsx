@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import MentorInfo from "./MentorInfo";
 import SkillsList from "./SkillsList";
 import AddSkillForm from "./AddSkillForm";
-import AlertMessage from "../../UI/AlertMessage";
 import { MentorService } from "../../Services/mentorService";
+import './MentorProfile.css';
 
 type MentorProfileData = {
   name: string;
@@ -11,7 +11,7 @@ type MentorProfileData = {
   createdAt: string;
   skills: string[];
   totalReviews: number;
-  image: string | null; // Добавлено поле для URL изображения аватара
+  image: string | null;
 };
 
 const MentorProfile = () => {
@@ -23,116 +23,84 @@ const MentorProfile = () => {
   useEffect(() => {
     const fetchMentorProfile = async () => {
       try {
-        console.log('🔄 Starting to fetch mentor profile...');
         const data = await MentorService.GetMentorProfile();
-        console.log('✅ mentor profile data received:', data);
         setMentor(data);
       } catch (err: any) {
-        console.error('❌ Error fetching mentor profile:', err);
         setError(err.message);
       } finally {
-        setLoading(false); // Устанавливаем состояние загрузки в false
+        setLoading(false);
       }
     };
-
     fetchMentorProfile();
   }, []);
 
-  const handleAddSkill = async (skill: string) => {
-    try {
-      var text = await MentorService.AddSkill(skill);
-      setSuccessMessage(text);
-      setError(null);
-      setMentor((prevMentor) =>
-        prevMentor ? { ...prevMentor, skills: [...prevMentor.skills, skill] } : null
-      );
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
-  const handleDeleteSkill = async (skillName: string) => {
-    try {
-      var text = await MentorService.DeleteSkill(skillName);
-
-      setSuccessMessage(text);
-      setError(null);
-      setMentor((prevMentor) =>
-        prevMentor ? { ...prevMentor, skills: prevMentor.skills.filter((s) => s !== skillName) } : null
-      );
-    } catch (err: any) {
-      setError(err.message);
-    }
-  };
-
   const handleUpdateProfile = async (newName: string, newEmail: string) => {
-    if (!mentor) return; // Проверяем, что mentor не равен null
-
+    if (!mentor) return;
     try {
-      await MentorService.UpdateProfile(newName,newEmail);
-
-      const updatedMentor = { ...mentor, name: newName, email: newEmail }; // Обновляем состояние
-      setMentor(updatedMentor);
+      await MentorService.UpdateProfile(newName, newEmail);
+      setMentor({ ...mentor, name: newName, email: newEmail });
       setSuccessMessage("Profile updated successfully!");
     } catch (err: any) {
       setError(err.message);
     }
   };
 
+  const handleAddSkill = async (skill: string) => {
+    try {
+      const text = await MentorService.AddSkill(skill);
+      setSuccessMessage(text);
+      setMentor(prev => prev ? { ...prev, skills: [...prev.skills, skill] } : null);
+    } catch (err: any) { setError(err.message); }
+  };
+
+  const handleDeleteSkill = async (skillName: string) => {
+    try {
+      const text = await MentorService.DeleteSkill(skillName);
+      setSuccessMessage(text);
+      setMentor(prev => prev ? { ...prev, skills: prev.skills.filter(s => s !== skillName) } : null);
+    } catch (err: any) { setError(err.message); }
+  };
+
   useEffect(() => {
     if (successMessage || error) {
-      const timer = setTimeout(() => {
-        setSuccessMessage(null);
-        setError(null);
-      }, 2000);
-
+      const timer = setTimeout(() => { setSuccessMessage(null); setError(null); }, 2000);
       return () => clearTimeout(timer);
     }
   }, [successMessage, error]);
 
-  if (loading) return <div className="text-center mt-5">Loading...</div>;
-  if (!mentor) return <div className="text-center mt-5">No mentor data available</div>;
+  if (loading) return <div className="profile-loading"><div className="spinner"></div></div>;
+  if (!mentor) return <div className="profile-page-container">No data found</div>;
 
   return (
-    <div className="container d-flex justify-content-center mt-5">
-      <div className="card shadow-lg rounded-3" style={{ maxWidth: "600px" }}>
-        <div className="card-header bg-primary text-white text-center py-3">
-          <h3>Mentor Profile</h3>
-        </div>
-        <div className="card-body text-center">
-          {/* Аватар ментора */}
-          {mentor.image ? (
-            <img
-              src={mentor.image}
-              alt="Mentor Avatar"
-              className="rounded-circle"
-              style={{ width: "150px", height: "150px", objectFit: "cover", marginBottom: "20px" }}
-            />
-          ) : (
-            <div
-              style={{
-                width: "150px",
-                height: "150px",
-                backgroundColor: "#ddd",
-                borderRadius: "50%",
-                marginBottom: "20px",
-              }}
-            >
-              <span
-                style={{
-                  display: "block",
-                  textAlign: "center",
-                  lineHeight: "150px",
-                  fontSize: "2rem",
-                  color: "#fff",
-                }}
-              >
-                {mentor.name[0]} {/* Отображаем первую букву имени */}
-              </span>
-            </div>
-          )}
+    <div className="profile-page-container">
+      <div className="profile-card">
+<div className="profile-header">
+  <div className="profile-avatar-container">
+    <div className="position-relative">
+      {mentor.image ? (
+        <img src={mentor.image} alt="Avatar" className="profile-avatar" />
+      ) : (
+        <div className="profile-avatar-placeholder">{mentor.name[0]}</div>
+      )}
+      <div className="status-dot online"></div>
+    </div>
+    <div className="profile-title">
+      <h3>{mentor.name}</h3>
+      <div className="d-flex align-items-center gap-3">
+        <span className="profile-role">Mentor</span>
+        <span className="header-reg-date">
+          <i className="far fa-calendar-alt me-1"></i> 
+          Since {new Date(mentor.createdAt).toLocaleDateString()}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
-          {/* Остальная информация */}
+        <div className="profile-body">
+          {error && <div className="alert-box error">{error}</div>}
+          {successMessage && <div className="alert-box success">{successMessage}</div>}
+
           <MentorInfo
             name={mentor.name}
             email={mentor.email}
@@ -140,11 +108,15 @@ const MentorProfile = () => {
             totalReviews={mentor.totalReviews}
             onUpdateProfile={handleUpdateProfile}
           />
-          <SkillsList skills={mentor.skills} onDeleteSkill={handleDeleteSkill} />
-          <AddSkillForm onAddSkill={handleAddSkill} />
 
-          {error ? <AlertMessage message={error} type="danger" /> : null}
-          {successMessage ? <AlertMessage message={successMessage} type="success" /> : null}
+          <div className="skills-section-container">
+            <div className="skills-header">
+              <i className="fas fa-graduation-cap"></i>
+              <h4>Expertise & Skills</h4>
+            </div>
+            <SkillsList skills={mentor.skills} onDeleteSkill={handleDeleteSkill} />
+            <AddSkillForm onAddSkill={handleAddSkill} />
+          </div>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { StudentService } from "../Services/studentService";
 import Chat from "../Chat/Chat";
 import { sendMessage } from "@microsoft/signalr/dist/esm/Utils";
+import  "../Mentors/UserCards.css";
 
 type UserDto = {
   id: string;
@@ -118,62 +119,56 @@ const Students = () => {
       connection.stop();
     }
   };
-
-  return (
-    <div className="album py-5 bg-body-tertiary">
-      <div className="container">
-        {error && <div className="alert alert-danger">{error}</div>} {/* Показываем ошибку, если есть */}
-        
-        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-          {students.map((student) => (
-            <div className="col" key={student.id}>
-              <div className="card shadow-sm">
-                <svg
-                  className="bd-placeholder-img card-img-top"
-                  width="100%"
-                  height="225"
-                  xmlns="http://www.w3.org/2000/svg"
-                  role="img"
-                  aria-label="Placeholder: Thumbnail"
-                  preserveAspectRatio="xMidYMid slice"
-                  focusable="false"
-                >
-                  <title>Placeholder</title>
-                  <rect width="100%" height="100%" fill="#55595c" />
-                  <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                </svg>
-                <div className="card-body">
-                  <h5 className="card-title">{student.name}</h5>
-                  <p className="card-text">
-                  <img src={student.image}
-                          alt={student.name}
-                          className="rounded-circle"
-                          style={{ width: "30px", height: "30px", marginRight: "10px" }}></img>
-                    Email: {student.email}
-                    </p>
-                  <div className="d-flex justify-content-between align-items-center">
-                    <div className="btn-group">
-                    <Button text='View' onClick={() => handleNavigation(student.id)} />
-                    <Button text="Chat" onClick={() => handleChatOpen(student)} className="btn btn-outline-success" />
-                    </div>
-                    <small className="text-body-secondary">9 mins</small>
-                  </div>
-                </div>
-              </div>
+return (
+  <div className="py-5" style={{ background: '#f8faff', minHeight: '100vh' }}>
+    <div className="container">
+      {error && <div className="alert alert-danger">{error}</div>}
+      
+      <div className="user-grid">
+        {students.map((student) => (
+          <div className="user-card" key={student.id}>
+            <div className="avatar-wrapper">
+              <img 
+                src={student.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
+                alt={student.name} 
+                className="user-avatar-lg" 
+              />
             </div>
-          ))}
-        </div>
-      </div>
 
-      {isChatOpen && activeChatPartner && (
-        <div className="chat-container">
-            <Chat messages={messages} sendMessage={sendMessage} closeChat={handleChatClose} chatPartnerName={activeChatPartner.name}        
-              chatPartnerImage={activeChatPartner.image}     
-              chatPartnerOnline={isPartnerOnline} />
-        </div>
-      )}
+            <h5 className="user-name">{student.name}</h5>
+            <p className="user-email">{student.email}</p>
+
+            <div className="user-card-actions">
+              <Button 
+                text='View' 
+                onClick={() => handleNavigation(student.id)} 
+                className="btn-view"
+              />
+              <Button 
+                text="Chat" 
+                onClick={() => handleChatOpen(student)} 
+                className="btn-chat-action" 
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  );
+
+    {isChatOpen && activeChatPartner && (
+      <div className="chat-container">
+          <Chat 
+            messages={messages} 
+            sendMessage={sendMessage} 
+            closeChat={handleChatClose} 
+            chatPartnerName={activeChatPartner.name}        
+            chatPartnerImage={activeChatPartner.image}     
+            chatPartnerOnline={isPartnerOnline} 
+          />
+      </div>
+    )}
+  </div>
+);
 };
 
 export default Students;

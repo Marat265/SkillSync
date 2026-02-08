@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "../../UI/Button";
 
 type SkillsListProps = {
   skills: string[];
@@ -8,22 +7,22 @@ type SkillsListProps = {
 
 const SkillsList: React.FC<SkillsListProps> = ({ skills, onDeleteSkill }) => {
   return (
-    <div>
-      <h4>Skills</h4>
+    <div className="skills-wrapper-custom">
       {skills.length > 0 ? (
-        <ul className="list-group mb-3">
-          {skills.map((skill, index) => (
-            <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-              {skill}
-              {/* <button className="btn btn-danger btn-sm" onClick={() => onDeleteSkill(skill)}>
-                Remove
-              </button> */}
-              <Button text="Remove" onClick={() => onDeleteSkill(skill)} className="btn btn-danger btn-sm"/>
-            </li>
-          ))}
-        </ul>
+        skills.map((skill, index) => (
+          <div key={index} className="skill-chip-interactive">
+            <span className="skill-text">{skill}</span>
+            <button 
+              type="button"
+              onClick={() => onDeleteSkill(skill)} 
+              className="skill-delete-btn"
+            >
+              &times;
+            </button>
+          </div>
+        ))
       ) : (
-        <p className="text-muted">No skills listed</p>
+        <p className="no-skills-text">No skills added yet.</p>
       )}
     </div>
   );
