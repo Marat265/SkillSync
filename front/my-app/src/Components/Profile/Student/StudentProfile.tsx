@@ -115,6 +115,10 @@ const StudentProfile = () => {
               src={profile.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
               alt="Profile"
               className="profile-avatar"
+               onError={(e) => {
+                e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+              }}
+               referrerPolicy="no-referrer"
             />
             <div className="profile-title">
                 <h3>My Profile</h3>
@@ -248,6 +252,7 @@ const StudentProfile = () => {
                   alt="Mentor"
                   className="rounded-circle me-2"
                   style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+                   referrerPolicy="no-referrer"
                 />
                 <div style={{ lineHeight: '1.2' }}>
                   <div className="text-muted" style={{ fontSize: '0.65rem text-transform: uppercase' }}>Mentor</div>

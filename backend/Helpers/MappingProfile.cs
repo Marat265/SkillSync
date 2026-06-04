@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
-using Portfolio.Dto;
 using Portfolio.Models;
+using Skillsync.Dto.Profiles;
+using Skillsync.Dto.Sessions;
+using Skillsync.Dto.User;
 
 namespace Portfolio.Helpers
 {

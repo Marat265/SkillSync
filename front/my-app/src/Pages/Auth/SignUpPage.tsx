@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { handleError } from '../../Helpers/errorHandler';
 import Button from '../../Components/UI/Button';
 import './SignUpPage.css';
+import { API_URL } from '../../config';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -27,7 +28,7 @@ const SignUpPage = () => {
     }
   
     try {
-      const response = await fetch('https://localhost:7002/api/Account/Register', {
+      const response = await fetch(`${API_URL}/api/Account/Register`, {
         method: 'POST',
         body: formData,
       });

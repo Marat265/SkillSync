@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Writers;
 using Portfolio.Data;
-using Portfolio.Dto;
 using Portfolio.Models;
+using Skillsync.Dto.Profiles;
+using Skillsync.Dto.Sessions;
 using Skillsync.Repositories;
 using System.Security.Claims;
 

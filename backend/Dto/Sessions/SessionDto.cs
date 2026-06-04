@@ -1,11 +1,12 @@
 ﻿using Portfolio.Enum;
+using Skillsync.Dto.User;
 
-namespace Portfolio.Dto
+namespace Skillsync.Dto.Sessions
 {
     public class SessionDto
     {
         public int SessionId { get; set; }
-        public  UserDto Mentor { get; set; }
+        public UserDto Mentor { get; set; }
         public string Topic { get; set; }
         public DateTime StartTime { get; set; }
         public string Duration { get; set; }

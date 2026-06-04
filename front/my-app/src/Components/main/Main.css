@@ -1,95 +1,204 @@
-/* Основной контейнер */
 .main-layout {
   position: relative;
-  background: #fcfcfd;
   min-height: 100vh;
-  padding-top: 40px; /* Отступ, чтобы не залезать под хедер */
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 0% 2%, rgba(79, 70, 229, 0.12), transparent 24%),
+    radial-gradient(circle at 100% 88%, rgba(37, 99, 235, 0.1), transparent 22%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
-/* Фон, который не мешает кликать (ВАЖНО!) */
 .soft-bg {
   position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: 
-    radial-gradient(at 0% 0%, rgba(102, 126, 234, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(118, 75, 162, 0.05) 0px, transparent 50%);
-  z-index: -1; /* Уходим максимально назад */
-  pointer-events: none; /* Пропускаем клики насквозь */
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(37, 99, 235, 0.18) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(79, 70, 229, 0.12) 1.5px, transparent 1.5px);
+  background-size: 22px 22px, 26px 26px;
+  background-position: 38px 330px, calc(100% - 120px) calc(100% - 110px);
+  background-repeat: no-repeat;
 }
 
-/* Hero карточка */
+.hero-section,
+.content-section {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-section {
+  padding: 42px 0 18px;
+}
+
 .hero-card {
+  position: relative;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  max-width: 850px;
-  margin: 0 auto 60px;
-  padding: 3rem;
-  background: white;
-  border-radius: 32px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.02);
+  overflow: hidden;
+  padding: 58px 40px;
+  border: 1px solid rgba(191, 219, 254, 0.7);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(238, 242, 255, 0.92) 0%, rgba(255, 255, 255, 0.96) 48%, rgba(226, 232, 255, 0.9) 100%);
+  box-shadow: 0 28px 80px rgba(37, 99, 235, 0.13);
+}
+
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(45deg, rgba(37, 99, 235, 0.08) 0%, transparent 28%),
+    radial-gradient(circle at 96% 74%, rgba(37, 99, 235, 0.14), transparent 16%),
+    radial-gradient(circle at 8% 78%, rgba(79, 70, 229, 0.12), transparent 12%);
+}
+
+.hero-card::after {
+  content: "";
+  position: absolute;
+  top: 74px;
+  right: 74px;
+  width: 96px;
+  height: 44px;
+  border-top: 3px solid rgba(79, 70, 229, 0.22);
+  border-radius: 50%;
+  transform: rotate(-14deg);
+}
+
+.hero-badge,
+.hero-title,
+.hero-text,
+.hero-btns {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-badge {
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  padding: 6px 16px;
-  border-radius: 100px;
-  font-size: 0.8rem;
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(79, 70, 229, 0.09);
+  color: #2563eb;
+  font-size: 0.78rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
 .hero-title {
-  font-size: 4rem;
-  font-weight: 800;
-  color: #1a202c;
-  margin: 20px 0;
-  letter-spacing: -1px;
+  margin: 22px 0 16px;
+  color: #0f172a;
+  font-size: clamp(3rem, 8vw, 5.1rem);
+  font-weight: 950;
+  letter-spacing: 0;
+  line-height: 0.95;
 }
 
-.hero-title span { color: #667eea; }
+.hero-title span {
+  color: #2563eb;
+}
 
 .hero-text {
-  font-size: 1.2rem;
-  color: #718096;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  max-width: 720px;
+  margin: 0 auto 30px;
+  color: #64748b;
+  font-size: clamp(1rem, 2vw, 1.16rem);
+  line-height: 1.55;
 }
 
-/* Кнопки */
-.hero-btns { display: flex; gap: 15px; justify-content: center; }
+.hero-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+.btn-primary-custom,
+.btn-secondary-custom {
+  min-width: 170px;
+  min-height: 48px;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
 
 .btn-primary-custom {
-  background: #667eea;
-  color: white;
-  border: none;
-  padding: 14px 30px;
-  border-radius: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
+  border: 0;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.32);
 }
 
-.btn-primary-custom:hover { background: #5a67d8; transform: translateY(-2px); }
+.btn-primary-custom::after {
+  content: "->";
+  margin-left: 12px;
+}
 
 .btn-secondary-custom {
-  background: #edf2f7;
-  color: #4a5568;
-  border: none;
-  padding: 14px 30px;
-  border-radius: 14px;
-  font-weight: 600;
-  cursor: pointer;
+  border: 1px solid #dbe4f0;
+  background: rgba(255, 255, 255, 0.9);
+  color: #334155;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
 }
 
-/* Списки */
-.section-title-box { text-align: center; margin-bottom: 40px; }
-.section-title-box h2 { font-weight: 800; color: #2d3748; }
-.title-underline { width: 50px; height: 4px; background: #667eea; margin: 10px auto; border-radius: 2px; }
+.btn-primary-custom:hover,
+.btn-secondary-custom:hover {
+  transform: translateY(-2px);
+}
+
+.content-section {
+  padding: 28px 0 70px;
+}
+
+.section-title-box {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.section-title-box h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: clamp(1.8rem, 3vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.title-underline {
+  width: 52px;
+  height: 4px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #2563eb, #4f46e5);
+}
 
 .list-card {
-  background: white;
-  border-radius: 24px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding-top: 24px;
+  }
+
+  .hero-card {
+    min-height: 330px;
+    padding: 46px 22px;
+  }
+
+  .hero-card::after {
+    display: none;
+  }
+
+  .btn-primary-custom,
+  .btn-secondary-custom {
+    width: 100%;
+  }
 }

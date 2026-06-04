@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../Components/UI/Button';
 import './LoginPage.css';
+import { API_URL } from '../../config';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const LoginPage = () => {
     setError(null);
   
     try {
-      const response = await fetch('https://localhost:7002/api/Account/Login', {
+      const response = await fetch(`${API_URL}/api/Account/Login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +43,7 @@ const LoginPage = () => {
   }
   
   const handleGoogleLogin = () => {
-    window.location.href = 'https://localhost:7002/api/Account/google-login?returnUrl=https://localhost:3000/google-callback';
+    window.location.href = `${API_URL}/api/Account/google-login?returnUrl=https://localhost:3000/google-callback`;
   };
 
   return (
@@ -97,7 +98,6 @@ const LoginPage = () => {
             <span className="divider-text">Or continue with</span>
           </div>
 
-          {/* Аккуратная круглая кнопка Google */}
           <div className="text-center mb-4">
             <button
               type="button"
@@ -123,7 +123,6 @@ const LoginPage = () => {
         </form>
       </div>
 
-      {/* Add Font Awesome for icons */}
       <link 
         rel="stylesheet" 
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 

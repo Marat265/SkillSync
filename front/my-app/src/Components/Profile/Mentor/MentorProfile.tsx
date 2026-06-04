@@ -78,7 +78,10 @@ const MentorProfile = () => {
   <div className="profile-avatar-container">
     <div className="position-relative">
       {mentor.image ? (
-        <img src={mentor.image} alt="Avatar" className="profile-avatar" />
+        <img src={mentor.image} alt="Avatar" className="profile-avatar"  onError={(e) => {
+         e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+          }}
+         referrerPolicy="no-referrer" />
       ) : (
         <div className="profile-avatar-placeholder">{mentor.name[0]}</div>
       )}

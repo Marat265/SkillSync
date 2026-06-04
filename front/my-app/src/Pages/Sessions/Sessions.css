@@ -126,3 +126,99 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
+
+.session-page .btn-success {
+    background: #38a169 !important; /* зелёный */
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(56, 161, 105, 0.3) !important;
+    transition: all 0.2s ease;
+}
+
+.session-page .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(56, 161, 105, 0.4) !important;
+    filter: brightness(1.05);
+}
+
+
+.toast-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 300px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 0.5px solid var(--color-border-tertiary);
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  animation: toast-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.toast-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.toast-item.success .toast-icon-box { background: #EAF3DE; }
+.toast-item.error   .toast-icon-box { background: #FCEBEB; }
+
+.toast-body { flex: 1; }
+
+.toast-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+}
+
+.toast-sub {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  animation: toast-progress 1.5s linear forwards;
+}
+
+.toast-item.success .toast-progress { background: #639922; }
+.toast-item.error   .toast-progress { background: #E24B4A; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(0)    scale(1);    }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to   { width: 0%;   }
+}

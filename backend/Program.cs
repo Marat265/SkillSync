@@ -1,3 +1,4 @@
+п»їusing Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,9 @@ builder.Services.AddAuthentication(options =>
 {
     options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
     options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    options.Scope.Add("profile"); 
+    options.Scope.Add("email");
+    options.ClaimActions.MapJsonKey("picture", "picture", "url");
 });
 
 
@@ -61,9 +65,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", policy =>
     {
-        policy.WithOrigins("https://localhost:3000")  // Разрешаем доступ только с этого домена
-              .AllowAnyMethod()  // Разрешаем все HTTP-методы
-              .AllowAnyHeader()  // Разрешаем все заголовки
+        policy.WithOrigins("https://localhost:3000", "https://subuniversal-jeanelle-chaperonless.ngrok-free.dev")
+              .AllowAnyMethod()  
+              .AllowAnyHeader()  
               .AllowCredentials();
     });
 });
@@ -93,6 +97,9 @@ builder.Services.AddScoped<IMentorService, MentorService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddHttpClient<GeminiService>();
+
 
 var app = builder.Build();
 

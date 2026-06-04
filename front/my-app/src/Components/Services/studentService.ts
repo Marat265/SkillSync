@@ -1,15 +1,15 @@
 import { handleError } from "../../Helpers/errorHandler";
-
+import { API_URL } from '../../config';
 
 export const StudentService = {
 
     async GetAllStudents(){
-        const response = await fetch('https://localhost:7002/api/Anonymous/Students', {
+        const response = await fetch(`${API_URL}/api/Anonymous/Students`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            credentials: 'include', // Важно! Это заставляет браузер отправлять куки
+            credentials: 'include',
         })
           if (!response.ok) {
             throw new Error('Failed to fetch students');
@@ -21,13 +21,13 @@ export const StudentService = {
 
     async GetStudentDetails(studentId:string){
         const response = await fetch(
-            `https://localhost:7002/api/Anonymous/Student/${studentId}`, // Обновляем URL для студентов
+            `${API_URL}/api/Anonymous/Student/${studentId}`, 
             {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
               },
-              credentials: "include", // Если нужно для авторизации
+              credentials: "include", 
             }
           );
   
@@ -38,7 +38,7 @@ export const StudentService = {
     },
 
     async GetProfile(){
-      const response = await fetch("https://localhost:7002/api/Students/profile", {
+      const response = await fetch(`${API_URL}/api/Students/profile`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export const StudentService = {
 
 
     async UpdateStudentProfile(name: string, email: string){
-       const response = await fetch("https://localhost:7002/api/Students/profile", {
+       const response = await fetch(`${API_URL}/api/Students/profile`, {
               method: "PATCH",
               headers: {
                 "Content-Type": "application/json",

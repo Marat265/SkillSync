@@ -6,6 +6,7 @@ import { StudentService } from "../Services/studentService";
 import Chat from "../Chat/Chat";
 import { sendMessage } from "@microsoft/signalr/dist/esm/Utils";
 import  "../Mentors/UserCards.css";
+import { API_URL } from '../../config';
 
 type UserDto = {
   id: string;
@@ -22,6 +23,7 @@ const Students = () => {
   const [messages, setMessages] = useState<{ user: string; text: string }[]>([]);
   const [activeChatPartner, setActiveChatPartner] = useState<UserDto | null>(null);
   const [isPartnerOnline, setIsPartnerOnline] = useState<boolean>(false);
+  const [userData] = useState(() => JSON.parse(localStorage.getItem("user") || "{}"));
 
   const navigate = useNavigate();
 
@@ -61,11 +63,12 @@ const Students = () => {
     const chatId =  [userEmail, student.email].sort().join("_");  // Создаем ID чата по email
 
       try {
-        const response = await fetch(`https://localhost:7002/api/chat/${chatId}`);
+        const response = await fetch(`${API_URL}/api/chat/${chatId}`);
         const history = await response.json();
         const formatted = history.map((m: any) => ({
           user: m.fromEmail === userEmail ? "You" : student.name,
-          text: m.message
+          text: m.message,
+          sentAt: m.sentAt  
         }));
         setMessages(formatted);
       } catch (err) {
@@ -73,13 +76,13 @@ const Students = () => {
       }
   
     const conn = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:7002/chatHub")
+      .withUrl(`${API_URL}/chatHub`)
       .withAutomaticReconnect()
       .build();
   
     conn.on("ReceiveMessage", (user, text) => {
        const userDisplay = user === userName ? "You" : user;
-      setMessages((prev) => [...prev, { user:userDisplay, text }]);
+      setMessages((prev) => [...prev, { user:userDisplay, text, sentAt: new Date().toISOString() }]);
     });
   
     try {
@@ -120,7 +123,7 @@ const Students = () => {
     }
   };
 return (
-  <div className="py-5" style={{ background: '#f8faff', minHeight: '100vh' }}>
+  <div className="user-directory-page py-5">
     <div className="container">
       {error && <div className="alert alert-danger">{error}</div>}
       
@@ -132,6 +135,7 @@ return (
                 src={student.image || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"} 
                 alt={student.name} 
                 className="user-avatar-lg" 
+                 referrerPolicy="no-referrer"
               />
             </div>
 
@@ -155,18 +159,22 @@ return (
       </div>
     </div>
 
-    {isChatOpen && activeChatPartner && (
-      <div className="chat-container">
-          <Chat 
-            messages={messages} 
-            sendMessage={sendMessage} 
-            closeChat={handleChatClose} 
-            chatPartnerName={activeChatPartner.name}        
-            chatPartnerImage={activeChatPartner.image}     
-            chatPartnerOnline={isPartnerOnline} 
-          />
-      </div>
-    )}
+     {isChatOpen && activeChatPartner && (
+          <div className="chat-container">
+            <Chat
+              messages={messages}
+              sendMessage={sendMessage}
+              closeChat={handleChatClose}
+              chatPartnerName={activeChatPartner.name}
+              chatPartnerImage={activeChatPartner.image}
+              chatPartnerOnline={isPartnerOnline}
+              connection={connection}                    
+              partnerEmail={activeChatPartner.email}     
+              myEmail={userData?.email || ""}            
+              myName={userData?.userName || ""}          
+            />
+          </div>
+        )}
   </div>
 );
 };

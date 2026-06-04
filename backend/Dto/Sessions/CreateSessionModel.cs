@@ -1,4 +1,4 @@
-﻿namespace Portfolio.Dto
+﻿namespace Skillsync.Dto.Sessions
 {
     public class CreateSessionModel
     {

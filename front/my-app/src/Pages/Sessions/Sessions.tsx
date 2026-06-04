@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Button from '../../Components/UI/Button';
 import { useNavigate } from 'react-router-dom';
 import { isMentor } from '../../Functions/IsMentor';
+import { isLoggedIn } from '../../Functions/IsLoggedIn';
 import { SessionService } from '../../Components/Services/sessionService';
-import './Sessions.css'; // Используем те же стили
+import './Sessions.css'; 
 
 type MentorDto = {
   id: string;
@@ -28,15 +29,31 @@ const statusLabels: Record<number, string> = {
   2: 'Cancelled'
 };
 
-const MentorSessions = () => {
+type Toast = {
+  id: number;
+  message: string;
+  type: "success" | "error";
+};
+
+const Sessions = () => {
   const [sessions, setSessions] = useState<SessionDto[]>([]);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const mentor = isMentor();
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 1500);
+  };
 
   useEffect(() => {
     const fetchSessions = async () => {
       try {
-        const data = await SessionService.GetMentorSessions();
+        const data = await SessionService.GetAllSessions();
         setSessions(data);
         setError(null);
       } catch (err: any) {
@@ -54,6 +71,17 @@ const MentorSessions = () => {
   const handleNavigation = (sessionId: number) => {
     navigate(`/session/${sessionId}`);
   };
+  
+ const handleJoinSession = async (sessionId: number) => {
+  try {
+    await SessionService.JoinSession(sessionId);
+    showToast("You have successfully joined the session! 🎉", "success");
+    const data = await SessionService.GetAllSessions();
+    setSessions(data);
+  } catch (err: any) {
+    showToast(err.message, "error");
+  }
+};
 
   const deleteSession = async (sessionId: number) => {
     if (!window.confirm("Delete this session?")) return;
@@ -78,7 +106,7 @@ const MentorSessions = () => {
   return (
     <div className="session-page container py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold text-dark">My Mentor Sessions</h2>
+        <h2 className="fw-bold text-dark">All Sessions</h2>
         {error && <div className="alert alert-danger py-2 px-4">{error}</div>}
       </div>
 
@@ -125,15 +153,14 @@ const MentorSessions = () => {
 
             <div className="session-footer">
               <Button 
-                text='View Details' 
+                text='View' 
                 className="btn-primary btn-sm"
                 onClick={() => handleNavigation(session.sessionId)} 
-              />
-              <Button 
-                text='Delete' 
-                className="btn-logout-session btn-sm mt-0"
-                onClick={() => deleteSession(session.sessionId)} 
-              />
+                />
+                {isLoggedIn() && !mentor && session.currentStudents < session.maxStudents && (
+                  <Button text='Join Session' className="btn-success btn-sm"
+                          onClick={() => handleJoinSession(session.sessionId)} />
+                )}
             </div>
           </div>
         ))}
@@ -144,8 +171,29 @@ const MentorSessions = () => {
           <p className="text-muted m-0">No sessions found.</p>
         </div>
       )}
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <div
+            key={toast.id}
+            className={`toast-item ${toast.type}`}
+            onClick={() => setToasts(prev => prev.filter(t => t.id !== toast.id))}
+          >
+            <div className="toast-icon-box">
+              {toast.type === "success" ? "✅" : "❌"}
+            </div>
+            
+            <div className="toast-body">
+              <p className="toast-title">
+                {toast.type === "success" ? "Joined successfully!" : "Something went wrong"}
+              </p>
+              <p className="toast-sub">{toast.message}</p>
+            </div>
+            <div className="toast-progress" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default MentorSessions;
+export default Sessions;

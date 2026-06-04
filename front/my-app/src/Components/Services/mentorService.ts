@@ -1,11 +1,12 @@
 import { useActionData } from "react-router-dom";
 import { handleError } from "../../Helpers/errorHandler";
+import { API_URL } from '../../config';
 
 export const MentorService = {
 
 
     async GetAllMentors(){
-        const response = await fetch('https://localhost:7002/api/Anonymous/Mentors', {
+        const response = await fetch(`${API_URL}/api/Anonymous/Mentors`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +20,7 @@ export const MentorService = {
     },
 
     async GetMentorProfile(){
-        const response = await fetch("https://localhost:7002/api/Mentor/profile", {
+        const response = await fetch(`${API_URL}/api/Mentor/profile`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
@@ -29,27 +30,27 @@ export const MentorService = {
     },
 
     async AddSkill(skill:string){
-        const response = await fetch(`https://localhost:7002/api/Mentor/Skills/${skill}`, {
+        const response = await fetch(`${API_URL}/api/Mentor/Skills/${skill}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
           });
     
           if (!response.ok) {
-            const errorText = await response.text(); // Ждем текст ошибки
+            const errorText = await response.text(); 
             throw new Error(errorText || "Failed to add skill");
           }
           return response.text();
     },
 
     async DeleteSkill(skillName: string){
-        const response = await fetch(`https://localhost:7002/api/Mentor/Skills/${skillName}`, {
+        const response = await fetch(`${API_URL}/api/Mentor/Skills/${skillName}`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
           });
           if (!response.ok) {
-            const errorText = await response.text(); // Ждем текст ошибки
+            const errorText = await response.text(); 
             throw new Error(errorText || "Failed to remove skill");
           }
           return response.text();
@@ -57,11 +58,11 @@ export const MentorService = {
 
 
     async UpdateProfile(newName: string, newEmail: string){
-         const response = await fetch("https://localhost:7002/api/Mentor/profile", {
+         const response = await fetch(`${API_URL}/api/Mentor/profile`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ Name: newName, Email: newEmail }), // Отправляем новые данные
+                body: JSON.stringify({ Name: newName, Email: newEmail }), 
               });
         
               if (!response.ok) {

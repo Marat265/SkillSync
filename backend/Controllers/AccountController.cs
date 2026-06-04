@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portfolio.Dto.Auth;
 using Portfolio.Interfaces.Auth;
 using Portfolio.Models;
-using Skillsync.Dto;
+using Skillsync.Dto.User;
 using Skillsync.Interfaces.Image;
 using System.Security.Claims;
 
@@ -107,13 +107,10 @@ namespace Portfolio.Controllers
             var name = info.Principal.FindFirstValue(ClaimTypes.Name);
 
             var pictureUrl = info.Principal.FindFirstValue("picture");
-
             if (string.IsNullOrEmpty(pictureUrl))
             {
-                pictureUrl = "https://secure.gravatar.com/avatar/8de7fccc13e6e1db84cb8d76ef9141c7?s=500&d=mm&r=g"; 
+                pictureUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
             }
-
-
             var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
             if (user == null)
@@ -132,9 +129,13 @@ namespace Portfolio.Controllers
 
                     var result = await _userManager.CreateAsync(user);
                 }
-
                 var addLoginResult = await _userManager.AddLoginAsync(user, info);
                 
+            }
+            if (!string.IsNullOrEmpty(pictureUrl))
+            {
+                user.Image = pictureUrl;
+                await _userManager.UpdateAsync(user);
             }
             await _signInManager.SignInAsync(user, isPersistent: false);
 
@@ -171,6 +172,11 @@ namespace Portfolio.Controllers
 
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
+
+            var newToken = await _jwtProvider.GenerateToken(user);
+            _jwtProvider.AppendAuthCookie(Response, newToken);
+
+            await _signInManager.RefreshSignInAsync(user);
 
             return Ok("Role set successfully");
         }

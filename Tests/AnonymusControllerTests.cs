@@ -6,7 +6,8 @@ using Portfolio.Controllers;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Session;
-using Portfolio.Dto;
+using Skillsync.Dto.Sessions;
+using Skillsync.Dto.User;
 
 namespace Tests
 {

@@ -41,9 +41,9 @@ const MentorSessions = () => {
     }
   };
 
-  // Изменили тип на any, чтобы избежать конфликта с SessionDto
+
   const getStatusClass = (status: any) => {
-    const s = Number(status); // Принудительно приводим к числу
+    const s = Number(status); 
     switch (s) {
       case 0: return 'upcoming';
       case 1: return 'completed';

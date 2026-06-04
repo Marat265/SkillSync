@@ -1,4 +1,4 @@
-﻿namespace Skillsync.Dto
+﻿namespace Skillsync.Dto.User
 {
     public class SetRoleModelDto
     {

@@ -1,4 +1,4 @@
-﻿namespace Skillsync.Dto
+﻿namespace Skillsync.Dto.Chat
 {
     public class ChatMessageDto
     {

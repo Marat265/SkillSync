@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Writers;
 using Portfolio.Data;
-using Portfolio.Dto;
 using Portfolio.Enum;
 using Portfolio.Models;
+using Skillsync.Dto.Profiles;
+using Skillsync.Dto.Sessions;
 using Skillsync.Repositories;
 using System.Security.Claims;
 
@@ -22,12 +23,13 @@ namespace Portfolio.Controllers
         private readonly ISessionService _sessionrep;
         private readonly IStudentService _studentrep;
         private readonly IMapper _mapper;
-
-        public StudentsController(ISessionService SessionRepository, IStudentService studentRepository, IMapper mapper)
+        private readonly EmailService _emailService;
+        public StudentsController(ISessionService SessionRepository, IStudentService studentRepository, IMapper mapper, EmailService emailService)
         {
             _mapper = mapper;
             _sessionrep = SessionRepository;
             _studentrep = studentRepository;
+            _emailService = emailService;
         }
 
 
@@ -137,7 +139,16 @@ namespace Portfolio.Controllers
 
             _sessionrep.AddSessionRegistration(registration);
             session.CurrentStudents += 1; 
+
             await _sessionrep.SaveAsync();
+
+            var student = await _studentrep.GetStudentByIdAsync(studentId);
+            await _emailService.SendSessionConfirmationAsync(
+                student.Email,
+                student.Name,
+                session.Topic,
+                session.StartTime
+            );
 
             return Ok("Student successfully registered for the session");
         }
